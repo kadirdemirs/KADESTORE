@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String
+  password      String
+  role          String         @default("user")
+  points        Int            @default(0)
+  rank          String         @default("none")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  orders        Order[]
+  reviews       Review[]
+  userKeys      UserKey[]
+  steamAccounts SteamAccount[]
+}
+
+model Game {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  description String
+  platform    String    @default("Steam")
+  genre       String
+  price       Float
+  imageUrl    String    @default("")
+  isActive    Boolean   @default(true)
+  isFeatured  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  keys        GameKey[]
+  orders      Order[]
+  reviews     Review[]
+}
+
+model GameKey {
+  id        String   @id @default(cuid())
+  gameId    String
+  key       String   @unique
+  isUsed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  userKey   UserKey?
+}
+
+model Order {
+  id             String       @id @default(cuid())
+  userId         String
+  gameId         String
+  status         String       @default("completed")
+  price          Float
+  originalPrice  Float        @default(0)
+  discountAmount Float        @default(0)
+  couponId       String?
+  createdAt      DateTime     @default(now())
+  user           User         @relation(fields: [userId], references: [id])
+  game           Game         @relation(fields: [gameId], references: [id])
+  userKey        UserKey?
+  coupon         Coupon?      @relation(fields: [couponId], references: [id])
+}
+
+model Coupon {
+  id          String        @id @default(cuid())
+  code        String        @unique
+  type        String        @default("percent")
+  value       Float
+  minAmount   Float         @default(0)
+  maxUses     Int           @default(0)
+  usedCount   Int           @default(0)
+  isActive    Boolean       @default(true)
+  expiresAt   DateTime?
+  createdAt   DateTime      @default(now())
+  orders      Order[]
+  usages      CouponUsage[]
+}
+
+model CouponUsage {
+  id        String   @id @default(cuid())
+  couponId  String
+  userId    String
+  orderId   String
+  usedAt    DateTime @default(now())
+  coupon    Coupon   @relation(fields: [couponId], references: [id])
+}
+
+model UserKey {
+  id          String   @id @default(cuid())
+  userId      String
+  gameKeyId   String   @unique
+  orderId     String?  @unique
+  source      String   @default("purchase")
+  claimedAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  gameKey     GameKey  @relation(fields: [gameKeyId], references: [id])
+  order       Order?   @relation(fields: [orderId], references: [id])
+}
+
+model SteamAccount {
+  id           String   @id @default(cuid())
+  userId       String
+  label        String
+  sharedSecret String
+  identitySecret String @default("")
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  gameId    String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  game      Game     @relation(fields: [gameId], references: [id])
+}
