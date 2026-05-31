@@ -106,7 +106,7 @@ export default function AdminAnalyticsPage() {
           <h2 className="font-bold text-gray-900 mb-4">Platform Dağılımı</h2>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
-              <Pie data={stats?.platformBreakdown || []} dataKey="count" nameKey="platform" cx="50%" cy="50%" outerRadius={80} label={({ platform, percent }) => `${platform} ${(percent * 100).toFixed(0)}%`}>
+              <Pie data={stats?.platformBreakdown || []} dataKey="count" nameKey="platform" cx="50%" cy="50%" outerRadius={80} label={(props: any) => `${props.platform} ${((props.percent ?? 0) * 100).toFixed(0)}%`}>
                 {(stats?.platformBreakdown || []).map((_: any, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
               </Pie>
               <Tooltip />

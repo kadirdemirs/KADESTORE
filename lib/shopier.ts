@@ -52,7 +52,6 @@ export function generateShopierForm(params: ShopierPaymentParams): {
     total_order_value: totalStr,
     currency: currency,
     current_currency_value: "1",
-    platform_order_id: params.orderId,
     random_nr: String(randomNr),
     signature: signature,
     callback: `${appUrl}/api/payment/callback`,

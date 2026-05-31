@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Plus, Pencil, Trash2, X, Check } from "lucide-react";
 
-const EMPTY = { title: "", description: "", platform: "Steam", genre: "Aksiyon", price: "", imageUrl: "", isActive: true, isFeatured: false };
+const EMPTY = { title: "", description: "", platform: "Steam", genre: "Aksiyon", price: "", imageUrl: "", isActive: true, isFeatured: false, deliveryType: "key" };
 
 export default function AdminGamesPage() {
   const [games, setGames] = useState<any[]>([]);
@@ -24,7 +24,7 @@ export default function AdminGamesPage() {
   function openCreate() { setEditing(null); setForm(EMPTY); setError(""); setShowForm(true); }
   function openEdit(game: any) {
     setEditing(game);
-    setForm({ title: game.title, description: game.description, platform: game.platform, genre: game.genre, price: game.price, imageUrl: game.imageUrl, isActive: game.isActive, isFeatured: game.isFeatured });
+    setForm({ title: game.title, description: game.description, platform: game.platform, genre: game.genre, price: game.price, imageUrl: game.imageUrl, isActive: game.isActive, isFeatured: game.isFeatured, deliveryType: game.deliveryType || "key" });
     setError("");
     setShowForm(true);
   }
@@ -103,6 +103,27 @@ export default function AdminGamesPage() {
                   </select>
                 </div>
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Teslim Tipi</label>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { v: "key", title: "Ürün Anahtarı", desc: "Klasik anahtar teslimi" },
+                    { v: "account", title: "Hazır Hesap", desc: "Kullanıcı adı/şifre + Guard" },
+                  ].map((opt) => (
+                    <button
+                      key={opt.v}
+                      type="button"
+                      onClick={() => setForm({ ...form, deliveryType: opt.v })}
+                      className={`text-left rounded-xl border px-3 py-2.5 transition ${
+                        form.deliveryType === opt.v ? "border-amber-400 bg-amber-50" : "border-gray-200 hover:border-gray-300"
+                      }`}
+                    >
+                      <p className="text-sm font-semibold text-gray-900">{opt.title}</p>
+                      <p className="text-xs text-gray-400">{opt.desc}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div className="flex gap-6">
                 <label className="flex items-center gap-2 text-sm">
                   <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="rounded" />
@@ -137,6 +158,7 @@ export default function AdminGamesPage() {
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Oyun</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Platform</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Tür</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Teslim</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Fiyat</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Stok</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Durum</th>
@@ -149,6 +171,11 @@ export default function AdminGamesPage() {
                   <td className="px-5 py-3 font-medium text-gray-900 max-w-48 truncate">{game.title}</td>
                   <td className="px-4 py-3 text-gray-500">{game.platform}</td>
                   <td className="px-4 py-3 text-gray-500">{game.genre}</td>
+                  <td className="px-4 py-3">
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${game.deliveryType === "account" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-600"}`}>
+                      {game.deliveryType === "account" ? "Hesap" : "Anahtar"}
+                    </span>
+                  </td>
                   <td className="px-4 py-3 font-semibold text-amber-500">₺{game.price.toFixed(2)}</td>
                   <td className="px-4 py-3 text-gray-500">{game._count?.keys ?? 0} adet</td>
                   <td className="px-4 py-3">

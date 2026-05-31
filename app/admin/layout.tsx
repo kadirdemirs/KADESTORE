@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Gamepad2, Key, Users, ShoppingBag, Home, Package, BarChart3, Tag, RefreshCw, Mail } from "lucide-react";
+import { LayoutDashboard, Gamepad2, Key, Users, ShoppingBag, Home, Package, BarChart3, Tag, UserCog } from "lucide-react";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -13,6 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
     { href: "/admin/games", label: "Oyunlar", icon: Gamepad2 },
     { href: "/admin/keys", label: "Anahtarlar", icon: Key },
+    { href: "/admin/accounts", label: "Hesap Stoğu", icon: UserCog },
     { href: "/admin/stock", label: "Stok Kontrolü", icon: Package },
     { href: "/admin/coupons", label: "Kuponlar", icon: Tag },
     { href: "/admin/users", label: "Kullanıcılar", icon: Users },

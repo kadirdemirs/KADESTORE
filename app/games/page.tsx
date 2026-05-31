@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "KadeStore'da 500+ dijital oyun keşfedin. Steam, Epic Games, Xbox ve daha fazlası.",
 };
 
+export const dynamic = "force-dynamic";
+
 async function getGames(platform?: string, genre?: string, q?: string, sort?: string, minPrice?: string, maxPrice?: string) {
   return prisma.game.findMany({
     where: {

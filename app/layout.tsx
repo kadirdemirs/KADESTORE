@@ -4,6 +4,7 @@ import "./globals.css";
 import SessionWrapper from "@/components/SessionWrapper";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import PWARegister from "@/components/PWARegister";
+import SecurityNotice from "@/components/SecurityNotice";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider>
           <PWARegister />
           <SessionWrapper>{children}</SessionWrapper>
+          <SecurityNotice />
         </ThemeProvider>
       </body>
     </html>

@@ -25,28 +25,36 @@ model User {
 }
 
 model Game {
-  id          String    @id @default(cuid())
-  title       String
-  slug        String    @unique
-  description String
-  platform    String    @default("Steam")
-  genre       String
-  price       Float
-  imageUrl    String    @default("")
-  isActive    Boolean   @default(true)
-  isFeatured  Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  keys        GameKey[]
-  orders      Order[]
-  reviews     Review[]
+  id           String    @id @default(cuid())
+  title        String
+  slug         String    @unique
+  description  String
+  platform     String    @default("Steam")
+  genre        String
+  price        Float
+  imageUrl     String    @default("")
+  // "key" = klasik ürün anahtarı teslimi, "account" = hazır hesap teslimi (kullanıcı adı/şifre/guard)
+  deliveryType String    @default("key")
+  isActive     Boolean   @default(true)
+  isFeatured   Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  keys         GameKey[]
+  orders       Order[]
+  reviews      Review[]
 }
 
 model GameKey {
   id        String   @id @default(cuid())
   gameId    String
+  // Anahtar teslimi için ürün anahtarı; hesap teslimi için otomatik üretilen referans kodu
   key       String   @unique
   isUsed    Boolean  @default(false)
+  // Hazır hesap teslimi alanları (deliveryType = "account" olduğunda doldurulur)
+  steamUsername String @default("")
+  steamPassword String @default("")
+  sharedSecret  String @default("")
+  accountNote   String @default("")
   createdAt DateTime @default(now())
   game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
   userKey   UserKey?

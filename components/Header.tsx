@@ -33,15 +33,13 @@ export default function Header() {
               Ödüller
             </Link>
             {session && (
-              <>
-                <Link href="/redeem" className="px-4 py-2 text-sm text-amber-600 hover:text-amber-700 rounded-lg hover:bg-amber-50 transition font-medium">
-                  Kod Gir
-                </Link>
-                <Link href="/steam-guard" className="px-4 py-2 text-sm text-blue-600 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition font-medium">
-                  Steam Guard
-                </Link>
-              </>
+              <Link href="/guard" className="px-4 py-2 text-sm text-green-600 hover:text-green-700 rounded-lg hover:bg-green-50 transition font-medium">
+                Kod Al
+              </Link>
             )}
+            <Link href="/verify" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition">
+              Doğrula
+            </Link>
           </nav>
 
           {/* Right Actions */}
@@ -105,10 +103,11 @@ export default function Header() {
           <Link href="/" className="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Ana Sayfa</Link>
           <Link href="/games" className="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Oyunlar</Link>
           <Link href="/rewards" className="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Ödüller</Link>
+          <Link href="/verify" className="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Doğrula</Link>
           {session ? (
             <>
               <Link href="/redeem" className="block px-3 py-2 text-sm text-amber-600 font-medium rounded-lg hover:bg-amber-50" onClick={() => setMenuOpen(false)}>🎮 Kod Gir</Link>
-              <Link href="/steam-guard" className="block px-3 py-2 text-sm text-blue-600 font-medium rounded-lg hover:bg-blue-50" onClick={() => setMenuOpen(false)}>🛡️ Steam Guard</Link>
+              <Link href="/guard" className="block px-3 py-2 text-sm text-green-600 font-medium rounded-lg hover:bg-green-50" onClick={() => setMenuOpen(false)}>🛡️ Kod Al</Link>
               <Link href="/profile" className="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Profilim</Link>
               {(session.user as any)?.role === "admin" && (
                 <Link href="/admin" className="block px-3 py-2 text-sm text-amber-600 rounded-lg hover:bg-amber-50" onClick={() => setMenuOpen(false)}>Admin Panel</Link>

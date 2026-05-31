@@ -34,6 +34,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       imageUrl: body.imageUrl,
       isActive: body.isActive,
       isFeatured: body.isFeatured,
+      ...(body.deliveryType && { deliveryType: body.deliveryType === "account" ? "account" : "key" }),
     },
   });
   return NextResponse.json({ game });

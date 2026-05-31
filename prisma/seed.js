@@ -14,15 +14,18 @@ async function main() {
   });
 
   const userPassword = await bcrypt.hash("user123", 10);
-  await prisma.user.upsert({
+  const testUser = await prisma.user.upsert({
     where: { email: "test@kadestore.com" },
     update: {},
     create: { email: "test@kadestore.com", name: "Ahmet K.", password: userPassword, role: "user", points: 5 },
   });
 
+  // Geçerli 20-byte base64 shared_secret örnekleri (Steam Guard kodu üretebilir)
+  const SECRET_A = "a2FkZXN0b3JlU2VjcmV0MTIzNDU=";
+
   const games = [
     { title: "LEGO Batman Legacy of the Dark Knight Delux", slug: "lego-batman-dark-knight-delux", description: "Batman olarak LEGO dünyasında Gotham şehrini kötülüklerden koru.", platform: "Steam", genre: "Aksiyon", price: 89.99, isFeatured: true },
-    { title: "007 First Light Delux", slug: "007-first-light-delux", description: "James Bond'un gençlik yıllarını anlatan aksiyon oyunu.", platform: "Steam", genre: "Aksiyon", price: 149.99, isFeatured: true },
+    { title: "007 First Light Delux", slug: "007-first-light-delux", description: "James Bond'un gençlik yıllarını anlatan aksiyon oyunu.", platform: "Steam", genre: "Aksiyon", price: 149.99, isFeatured: true, deliveryType: "account" },
     { title: "Forza 6 Premium", slug: "forza-6-premium", description: "Dünyanın en prestijli yarış pistlerinde yüzlerce gerçek araçla yarışın.", platform: "Steam", genre: "Spor", price: 199.99, isFeatured: true },
     { title: "Cyberpunk 2077", slug: "cyberpunk-2077", description: "Night City'de bir paralı askerin hayatta kalma mücadelesi.", platform: "Steam", genre: "RPG", price: 249.99 },
     { title: "The Witcher 3: Wild Hunt", slug: "the-witcher-3-wild-hunt", description: "Canavarları avlamak için dolaşan bir yaratık avcısının epik macerası.", platform: "Steam", genre: "RPG", price: 59.99 },
@@ -36,7 +39,7 @@ async function main() {
   for (const game of games) {
     const created = await prisma.game.upsert({
       where: { slug: game.slug },
-      update: {},
+      update: { deliveryType: game.deliveryType || "key" },
       create: {
         title: game.title,
         slug: game.slug,
@@ -46,19 +49,46 @@ async function main() {
         price: game.price,
         isActive: true,
         isFeatured: game.isFeatured || false,
+        deliveryType: game.deliveryType || "key",
       },
     });
 
     const existingKeys = await prisma.gameKey.count({ where: { gameId: created.id } });
     if (existingKeys === 0) {
-      const keyData = [];
-      for (let i = 0; i < 5; i++) {
-        keyData.push({
-          gameId: created.id,
-          key: `${game.slug.slice(0, 5).toUpperCase()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
-        });
+      if (game.deliveryType === "account") {
+        // Hazır hesap stoğu
+        const accData = [];
+        for (let i = 1; i <= 8; i++) {
+          accData.push({
+            gameId: created.id,
+            key: `ACC-${game.slug.slice(0, 4).toUpperCase()}-${i.toString().padStart(3, "0")}`,
+            steamUsername: `CovertDrake${4650 + i}`,
+            steamPassword: Math.random().toString(36).slice(2, 12),
+            sharedSecret: SECRET_A,
+            accountNote: `Hesap ${i}`,
+          });
+        }
+        await prisma.gameKey.createMany({ data: accData });
+
+        // Test kullanıcısına ilk hesabı ata (ekran görüntülerindeki senaryo)
+        const firstAcc = await prisma.gameKey.findFirst({ where: { gameId: created.id }, orderBy: { key: "asc" } });
+        if (firstAcc) {
+          await prisma.gameKey.update({ where: { id: firstAcc.id }, data: { isUsed: true } });
+          await prisma.userKey.create({
+            data: { userId: testUser.id, gameKeyId: firstAcc.id, source: "purchase" },
+          });
+          await prisma.user.update({ where: { id: testUser.id }, data: { points: { increment: 1 } } });
+        }
+      } else {
+        const keyData = [];
+        for (let i = 0; i < 5; i++) {
+          keyData.push({
+            gameId: created.id,
+            key: `${game.slug.slice(0, 5).toUpperCase()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
+          });
+        }
+        await prisma.gameKey.createMany({ data: keyData });
       }
-      await prisma.gameKey.createMany({ data: keyData });
     }
   }
 

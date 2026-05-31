@@ -39,13 +39,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const body = await req.json();
-  const { title, description, platform, genre, price, imageUrl, isActive, isFeatured } = body;
+  const { title, description, platform, genre, price, imageUrl, isActive, isFeatured, deliveryType } = body;
   if (!title || !description || !genre || !price) {
     return NextResponse.json({ error: "Eksik alan" }, { status: 400 });
   }
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") + "-" + Date.now();
   const game = await prisma.game.create({
-    data: { title, slug, description, platform: platform || "Steam", genre, price: parseFloat(price), imageUrl: imageUrl || "", isActive: isActive ?? true, isFeatured: isFeatured ?? false },
+    data: { title, slug, description, platform: platform || "Steam", genre, price: parseFloat(price), imageUrl: imageUrl || "", isActive: isActive ?? true, isFeatured: isFeatured ?? false, deliveryType: deliveryType === "account" ? "account" : "key" },
   });
   return NextResponse.json({ game }, { status: 201 });
 }

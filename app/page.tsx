@@ -4,6 +4,10 @@ import TickerBar from "@/components/TickerBar";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Zap, Shield, Headphones, ArrowRight } from "lucide-react";
+import Reveal from "@/components/Reveal";
+
+// DB'den canlı veri okuduğu için her istekte render edilir (build-time prerender DB ister)
+export const dynamic = "force-dynamic";
 
 async function getData() {
   const [games, totalUsers, totalGames, recentReviews] = await Promise.all([
@@ -35,7 +39,7 @@ export default async function Home() {
       {/* Hero */}
       <section className="bg-white py-20 px-4">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
+          <Reveal y={28}>
             <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
               AKTİF &amp; GÜVENİLİR
@@ -68,9 +72,9 @@ export default async function Home() {
                 </p>
               </div>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="flex flex-col gap-4">
+          <Reveal y={28} delay={0.1} className="flex flex-col gap-4">
             <div className="bg-gray-900 rounded-2xl p-5 text-white">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center">
@@ -105,7 +109,7 @@ export default async function Home() {
                 <div className="flex text-amber-400 mb-1 text-sm">★★★★★</div>
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -138,19 +142,21 @@ export default async function Home() {
               </Link>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {games.map((game) => (
-                <Link key={game.id} href={`/games/${game.slug}`} className="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-md transition hover:border-amber-200">
-                  <div className="h-36 bg-gradient-to-br from-amber-400 to-orange-500 relative overflow-hidden">
-                    {game.imageUrl && (
-                      <img src={game.imageUrl} alt={game.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                    )}
-                    <span className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded-full">{game.platform}</span>
-                  </div>
-                  <div className="p-3">
-                    <p className="text-sm font-semibold text-gray-900 truncate">{game.title}</p>
-                    <p className="text-amber-500 font-bold text-sm mt-1">₺{game.price.toFixed(2)}</p>
-                  </div>
-                </Link>
+              {games.map((game, i) => (
+                <Reveal key={game.id} delay={Math.min(i, 7) * 0.06}>
+                  <Link href={`/games/${game.slug}`} className="group block bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-md transition hover:border-amber-200">
+                    <div className="h-36 bg-gradient-to-br from-amber-400 to-orange-500 relative overflow-hidden">
+                      {game.imageUrl && (
+                        <img src={game.imageUrl} alt={game.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                      )}
+                      <span className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded-full">{game.platform}</span>
+                    </div>
+                    <div className="p-3">
+                      <p className="text-sm font-semibold text-gray-900 truncate">{game.title}</p>
+                      <p className="text-amber-500 font-bold text-sm mt-1">₺{game.price.toFixed(2)}</p>
+                    </div>
+                  </Link>
+                </Reveal>
               ))}
             </div>
           </div>

@@ -1,10 +1,12 @@
 "use client";
+import Link from "next/link";
 
 interface Game {
   id: string;
   title: string;
   platform: string;
   imageUrl: string;
+  slug?: string;
 }
 
 export default function TickerBar({ games }: { games: Game[] }) {
@@ -35,9 +37,9 @@ export default function TickerBar({ games }: { games: Game[] }) {
             ))}
           </div>
         </div>
-        <a href="/games" className="flex-shrink-0 px-4 text-xs text-amber-500 hover:text-amber-600 font-medium whitespace-nowrap">
+        <Link href="/games" className="flex-shrink-0 px-4 text-xs text-amber-500 hover:text-amber-600 font-medium whitespace-nowrap">
           Tümü &rsaquo;
-        </a>
+        </Link>
       </div>
     </div>
   );

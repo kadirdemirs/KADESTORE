@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { RANKS } from "@/lib/utils";
+import { RANKS, rankFromPoints } from "@/lib/utils";
 import Link from "next/link";
 import { Trophy, Lock } from "lucide-react";
 
@@ -55,7 +55,13 @@ export default async function RewardsPage() {
                 ></div>
               </div>
               <p className="text-xs text-gray-400 mt-1">
-                Mevcut rank: <span className="text-amber-500 font-semibold">{userRank === "none" ? "—" : userRank}</span>
+                Mevcut rank:{" "}
+                <span className="text-amber-500 font-semibold">
+                  {(() => {
+                    const r = userRank && userRank !== "none" ? userRank : rankFromPoints(userPoints);
+                    return r === "none" ? "Rütbesiz" : `KadeStore | ${r}`;
+                  })()}
+                </span>
               </p>
             </div>
           )}
