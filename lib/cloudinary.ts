@@ -12,8 +12,8 @@ export async function uploadToCloudinary(file: Buffer | Blob, folder = "kadestor
   const signature = crypto.createHash("sha1").update(paramsToSign).digest("hex");
 
   const formData = new FormData();
-  if (file instanceof Buffer) {
-    formData.append("file", new Blob([file]));
+  if (Buffer.isBuffer(file)) {
+    formData.append("file", new Blob([new Uint8Array(file)]));
   } else {
     formData.append("file", file);
   }

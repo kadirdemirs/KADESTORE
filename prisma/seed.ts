@@ -60,7 +60,6 @@ async function main() {
           gameId: created.id,
           key: `${game.slug.toUpperCase().slice(0, 5)}-${Math.random().toString(36).substr(2, 5).toUpperCase()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
         })),
-        skipDuplicates: true,
       });
     }
   }

@@ -6,6 +6,12 @@ import { rateLimit } from "./rate-limit";
 
 export const BCRYPT_ROUNDS = 12;
 
+type UserRole = "user" | "admin";
+
+function toUserRole(role: string): UserRole {
+  return role === "admin" ? "admin" : "user";
+}
+
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt", maxAge: 7 * 24 * 60 * 60 }, // 7 gün (30 yerine)
   secret: process.env.NEXTAUTH_SECRET,
@@ -48,7 +54,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
-          role: user.role,
+          role: toUserRole(user.role),
           points: user.points,
           rank: user.rank,
         };
