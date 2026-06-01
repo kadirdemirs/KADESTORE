@@ -13,22 +13,33 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+function canReadDatabase() {
+  return !!process.env.DATABASE_URL && !(process.env.VERCEL && process.env.DATABASE_URL.startsWith("file:"));
+}
+
 async function getGames(platform?: string, genre?: string, q?: string, sort?: string, minPrice?: string, maxPrice?: string) {
-  return prisma.game.findMany({
-    where: {
-      isActive: true,
-      ...(platform && { platform }),
-      ...(genre && { genre }),
-      ...(q && { title: { contains: q } }),
-      ...(minPrice && { price: { gte: parseFloat(minPrice) } }),
-      ...(maxPrice && { price: { lte: parseFloat(maxPrice) } }),
-    },
-    include: { _count: { select: { keys: { where: { isUsed: false } } } } },
-    orderBy: sort === "price_asc" ? { price: "asc" }
-      : sort === "price_desc" ? { price: "desc" }
-      : sort === "title" ? { title: "asc" }
-      : { createdAt: "desc" },
-  });
+  if (!canReadDatabase()) return [];
+
+  try {
+    return await prisma.game.findMany({
+      where: {
+        isActive: true,
+        ...(platform && { platform }),
+        ...(genre && { genre }),
+        ...(q && { title: { contains: q } }),
+        ...(minPrice && { price: { gte: parseFloat(minPrice) } }),
+        ...(maxPrice && { price: { lte: parseFloat(maxPrice) } }),
+      },
+      include: { _count: { select: { keys: { where: { isUsed: false } } } } },
+      orderBy: sort === "price_asc" ? { price: "asc" }
+        : sort === "price_desc" ? { price: "desc" }
+        : sort === "title" ? { title: "asc" }
+        : { createdAt: "desc" },
+    });
+  } catch (error) {
+    console.error("Games data unavailable:", error);
+    return [];
+  }
 }
 
 export default async function GamesPage({

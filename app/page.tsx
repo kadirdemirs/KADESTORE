@@ -11,14 +11,32 @@ import GameCard from "@/components/GameCard";
 
 export const dynamic = "force-dynamic";
 
+const fallbackData = {
+  games: [],
+  totalUsers: 0,
+  totalGames: 0,
+  recentReviews: [],
+};
+
+function canReadDatabase() {
+  return !!process.env.DATABASE_URL && !(process.env.VERCEL && process.env.DATABASE_URL.startsWith("file:"));
+}
+
 async function getData() {
-  const [games, totalUsers, totalGames, recentReviews] = await Promise.all([
-    prisma.game.findMany({ where: { isActive: true }, orderBy: { createdAt: "desc" }, take: 8 }),
-    prisma.user.count(),
-    prisma.game.count({ where: { isActive: true } }),
-    prisma.review.findMany({ include: { user: true }, orderBy: { createdAt: "desc" }, take: 3 }),
-  ]);
-  return { games, totalUsers, totalGames, recentReviews };
+  if (!canReadDatabase()) return fallbackData;
+
+  try {
+    const [games, totalUsers, totalGames, recentReviews] = await Promise.all([
+      prisma.game.findMany({ where: { isActive: true }, orderBy: { createdAt: "desc" }, take: 8 }),
+      prisma.user.count(),
+      prisma.game.count({ where: { isActive: true } }),
+      prisma.review.findMany({ include: { user: true }, orderBy: { createdAt: "desc" }, take: 3 }),
+    ]);
+    return { games, totalUsers, totalGames, recentReviews };
+  } catch (error) {
+    console.error("Homepage data unavailable:", error);
+    return fallbackData;
+  }
 }
 
 const SERVICES = [
