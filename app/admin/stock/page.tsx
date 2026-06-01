@@ -60,8 +60,8 @@ export default function AdminStockPage() {
   };
 
   const statusStyles = {
-    critical: { bg: "bg-red-100", text: "text-red-700", label: "Stok Yok", icon: XCircle, bar: "bg-red-400" },
-    low: { bg: "bg-amber-100", text: "text-amber-700", label: "Düşük Stok", icon: AlertTriangle, bar: "bg-amber-400" },
+    critical: { bg: "bg-red-100", text: "text-[#FFE74F]", label: "Stok Yok", icon: XCircle, bar: "bg-[#FFF785]" },
+    low: { bg: "bg-[#FFF785]/15", text: "text-[#FFE74F]", label: "Düşük Stok", icon: AlertTriangle, bar: "bg-[#FFF785]" },
     ok: { bg: "bg-green-100", text: "text-green-700", label: "Yeterli", icon: CheckCircle, bar: "bg-green-500" },
   };
 
@@ -72,19 +72,19 @@ export default function AdminStockPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Stok Kontrolü</h1>
+        <h1 className="text-2xl font-bold text-white">Stok Kontrolü</h1>
         <p className="text-gray-500 text-sm">Oyun başına anahtar stok durumu</p>
       </div>
 
       {/* Özet Kartları */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {[
-          { label: "Toplam Oyun", value: items.length, color: "text-gray-900" },
+          { label: "Toplam Oyun", value: items.length, color: "text-white" },
           { label: "Kullanılabilir", value: totalAvailable, color: "text-green-600" },
           { label: "Kullanılmış", value: totalUsed, color: "text-blue-600" },
-          { label: "Kritik Oyun", value: counts.critical, color: "text-red-600" },
+          { label: "Kritik Oyun", value: counts.critical, color: "text-[#FFF785]" },
         ].map(c => (
-          <div key={c.label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+          <div key={c.label} className="bg-[#111111] rounded-2xl border border-white/5 shadow-2xl p-4">
             <p className={`text-2xl font-black ${c.color}`}>{c.value}</p>
             <p className="text-xs text-gray-500 mt-0.5">{c.label}</p>
           </div>
@@ -97,11 +97,11 @@ export default function AdminStockPage() {
           const labels = { all: "Tümü", critical: "Stok Yok", low: "Düşük Stok", ok: "Yeterli" };
           const colors = {
             all: "bg-gray-900 text-white",
-            critical: "bg-red-500 text-white",
-            low: "bg-amber-500 text-white",
+            critical: "bg-[#FFF785] text-[#0a0a0a]",
+            low: "bg-[#FFF785] text-[#0a0a0a]",
             ok: "bg-green-500 text-white",
           };
-          const inactive = "bg-white text-gray-600 border border-gray-200 hover:border-gray-300";
+          const inactive = "bg-[#111111] text-gray-600 border border-white/10 hover:border-white/15";
           return (
             <button key={f} onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5 ${filter === f ? colors[f] : inactive}`}>
@@ -112,14 +112,14 @@ export default function AdminStockPage() {
       </div>
 
       {/* Tablo */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-[#111111] rounded-2xl border border-white/5 shadow-2xl overflow-hidden">
         {loading ? (
-          <div className="text-center py-12 text-gray-400">Yükleniyor...</div>
+          <div className="text-center py-12 text-gray-500">Yükleniyor...</div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-12 text-gray-400">Bu kategoride oyun yok.</div>
+          <div className="text-center py-12 text-gray-500">Bu kategoride oyun yok.</div>
         ) : (
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-100">
+            <thead className="bg-[#0a0a0a] border-b border-white/5">
               <tr>
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Oyun</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Stok Durumu</th>
@@ -138,17 +138,17 @@ export default function AdminStockPage() {
                 const isGenerating = generating === item.id;
 
                 return (
-                  <tr key={item.id} className={`hover:bg-gray-50 transition ${s === "critical" ? "bg-red-50/40" : ""}`}>
+                  <tr key={item.id} className={`hover:bg-[#0a0a0a] transition ${s === "critical" ? "bg-[#FFF785]/20" : ""}`}>
                     <td className="px-5 py-3">
                       <div>
-                        <p className="font-semibold text-gray-900 truncate max-w-48">{item.title}</p>
+                        <p className="font-semibold text-white truncate max-w-48">{item.title}</p>
                         <div className="flex gap-1.5 mt-0.5">
-                          <span className="text-xs text-gray-400">{item.platform}</span>
-                          <span className="text-xs text-gray-300">·</span>
-                          <span className="text-xs text-gray-400">₺{item.price.toFixed(0)}</span>
+                          <span className="text-xs text-gray-500">{item.platform}</span>
+                          <span className="text-xs text-gray-600">·</span>
+                          <span className="text-xs text-gray-500">₺{item.price.toFixed(0)}</span>
                         </div>
                         {/* stok çubuğu */}
-                        <div className="mt-1.5 h-1 bg-gray-100 rounded-full overflow-hidden w-36">
+                        <div className="mt-1.5 h-1 bg-white/5 rounded-full overflow-hidden w-36">
                           <div className={`h-full rounded-full ${st.bar}`} style={{ width: `${pct}%` }} />
                         </div>
                       </div>
@@ -159,12 +159,12 @@ export default function AdminStockPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <span className={`text-lg font-black ${s === "critical" ? "text-red-500" : s === "low" ? "text-amber-500" : "text-green-600"}`}>
+                      <span className={`text-lg font-black ${s === "critical" ? "text-[#FFF785]" : s === "low" ? "text-[#FFF785]" : "text-green-600"}`}>
                         {item.available}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center text-gray-500 font-medium">{item.used}</td>
-                    <td className="px-4 py-3 text-center text-gray-400">{item.total}</td>
+                    <td className="px-4 py-3 text-center text-gray-500">{item.total}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <input
@@ -172,7 +172,7 @@ export default function AdminStockPage() {
                           min="1" max="500"
                           value={genCount[item.id] || "10"}
                           onChange={e => setGenCount(c => ({ ...c, [item.id]: e.target.value }))}
-                          className="w-14 border border-gray-200 rounded-lg px-2 py-1 text-xs text-center focus:outline-none focus:border-amber-400"
+                          className="w-14 border border-white/10 rounded-lg px-2 py-1 text-xs text-center focus:outline-none focus:border-[#FFF785]"
                         />
                         <button
                           onClick={() => quickGenerate(item.id)}
@@ -186,7 +186,7 @@ export default function AdminStockPage() {
                         </button>
                         <Link
                           href="/admin/keys"
-                          className="inline-flex items-center gap-1 text-xs px-2.5 py-1.5 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition"
+                          className="inline-flex items-center gap-1 text-xs px-2.5 py-1.5 border border-white/10 text-gray-600 rounded-lg hover:bg-[#0a0a0a] transition"
                         >
                           <Plus size={12} /> Manuel
                         </Link>
@@ -202,13 +202,13 @@ export default function AdminStockPage() {
 
       {/* Kritik oyunlar özeti */}
       {counts.critical > 0 && (
-        <div className="mt-4 bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3">
-          <TrendingDown size={18} className="text-red-500 flex-shrink-0 mt-0.5" />
+        <div className="mt-4 bg-[#FFF785]/10 border border-red-200 rounded-2xl p-4 flex items-start gap-3">
+          <TrendingDown size={18} className="text-[#FFF785] flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-red-800">
+            <p className="text-sm font-semibold text-[#FFE74F]">
               {counts.critical} oyunun stoğu tükendi!
             </p>
-            <p className="text-xs text-red-600 mt-0.5">
+            <p className="text-xs text-[#FFF785] mt-0.5">
               Bu oyunlar için anahtar ekleyin veya otomatik üretin.
             </p>
           </div>

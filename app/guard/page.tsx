@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Shield, Clock, RefreshCw, Copy, Check, ShieldCheck } from "lucide-react";
 import type { LibraryItem } from "@/components/AccountCard";
+import { Skeleton } from "@/components/Skeleton";
 
 export default function GuardPage() {
   const { data: session, status } = useSession();
@@ -63,51 +64,59 @@ export default function GuardPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#0a0a0a] text-gray-100">
       <Header />
-      <main className="flex-1 bg-gray-50 dark:bg-gray-950 py-12 px-4">
-        <div className="max-w-xl mx-auto">
-          <div className="flex items-center gap-2 text-green-600 text-xs font-bold uppercase tracking-wider mb-2">
-            <Shield size={15} /> GUARD SİSTEMİ
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Doğrulama Kodu</h1>
-          <p className="text-gray-500 mt-2 mb-6">
+      <main className="flex-1 pt-32 pb-16 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 red-glow opacity-30" />
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full bg-[#FFF785]/10 blur-[100px]" />
+
+        <div className="relative max-w-xl mx-auto">
+          <span className="inline-block bg-[#FFF785]/10 text-[#FFF785] text-xs font-semibold px-3 py-1.5 rounded-full mb-3 border border-[#FFF785]/20">
+            <Shield size={12} className="inline -mt-0.5 mr-1" /> Guard Sistemi
+          </span>
+          <h1 className="font-display text-4xl md:text-5xl font-black text-white tracking-tight">Doğrulama Kodu</h1>
+          <p className="text-gray-400 mt-3 mb-6">
             Oyun hesabına giriş için gerekli tek kullanımlık guard kodunu buradan oluşturabilirsiniz.
           </p>
 
-          <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 rounded-xl p-3 mb-6 flex items-center gap-2 text-sm text-amber-800 dark:text-amber-300">
+          <div className="bg-[#FFF785]/10 border border-[#FFF785]/20 rounded-xl p-3 mb-6 flex items-center gap-2 text-sm text-[#FFF785]">
             <Clock size={16} /> Kodlar <strong>30 saniye</strong> geçerlidir. Aldıktan sonra hemen kullanın.
           </div>
 
           {status === "loading" || loading ? (
-            <div className="flex justify-center py-12">
-              <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin" />
+            <div className="bg-[#111111] rounded-3xl border border-white/5 shadow-2xl p-6 space-y-5">
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-20 w-full" />
+              <div className="flex gap-2">
+                <Skeleton className="h-12 flex-1 rounded-full" />
+                <Skeleton className="h-12 w-12 rounded-full" />
+              </div>
             </div>
           ) : !session ? (
-            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-8 text-center">
-              <Shield size={32} className="text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 text-sm mb-4">Kod oluşturmak için giriş yapmalısınız.</p>
-              <Link href="/login?redirect=/guard" className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition">
+            <div className="bg-[#111111] rounded-3xl border border-white/5 shadow-2xl p-8 text-center">
+              <Shield size={32} className="text-white/20 mx-auto mb-3" />
+              <p className="text-gray-400 text-sm mb-4">Kod oluşturmak için giriş yapmalısınız.</p>
+              <Link href="/login?redirect=/guard" className="inline-flex items-center gap-2 bg-[#FFF785] hover:bg-[#FFE74F] text-[#0a0a0a] px-5 py-2.5 rounded-full text-sm font-semibold transition">
                 Giriş Yap
               </Link>
             </div>
           ) : accounts.length === 0 ? (
-            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-8 text-center">
-              <Shield size={32} className="text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 text-sm mb-4">Guard kodu üretilebilecek bir hesabınız yok.</p>
-              <Link href="/games" className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition">
+            <div className="bg-[#111111] rounded-3xl border border-white/5 shadow-2xl p-8 text-center">
+              <Shield size={32} className="text-white/20 mx-auto mb-3" />
+              <p className="text-gray-400 text-sm mb-4">Guard kodu üretilebilecek bir hesabınız yok.</p>
+              <Link href="/games" className="inline-flex items-center gap-2 bg-[#FFF785] hover:bg-[#FFE74F] text-[#0a0a0a] px-5 py-2.5 rounded-full text-sm font-semibold transition">
                 Oyunlara Göz At
               </Link>
             </div>
           ) : (
-            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6 space-y-5">
-              {/* Oyun seçimi */}
+            <div className="bg-[#111111] rounded-3xl border border-white/5 shadow-2xl p-6 space-y-5">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Oyun</label>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Oyun</label>
                 <select
                   value={selected}
                   onChange={(e) => { setSelected(e.target.value); setResult(null); }}
-                  className="w-full border border-gray-200 dark:border-gray-700 dark:bg-gray-800 rounded-xl px-3 py-3 text-sm focus:outline-none focus:border-green-400"
+                  className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-3 text-sm focus:outline-none focus:border-[#FFF785]/60"
                 >
                   {accounts.map((a) => (
                     <option key={a.id} value={a.id}>
@@ -117,48 +126,45 @@ export default function GuardPage() {
                 </select>
               </div>
 
-              {/* Doğrulama (basit onay) */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Doğrulama</label>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Doğrulama</label>
                 <button
                   type="button"
                   onClick={() => setVerified((v) => !v)}
                   className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm transition ${
                     verified
-                      ? "border-green-300 bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-300"
-                      : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-gray-300"
+                      ? "border-[#FFF785]/40 bg-[#FFF785]/10 text-[#FFF785]"
+                      : "border-white/10 bg-white/5 text-gray-300 hover:border-white/20"
                   }`}
                 >
-                  <span className={`w-5 h-5 rounded-md flex items-center justify-center ${verified ? "bg-green-500" : "border-2 border-gray-300"}`}>
+                  <span className={`w-5 h-5 rounded-md flex items-center justify-center ${verified ? "bg-[#FFF785]" : "border-2 border-white/20"}`}>
                     {verified && <Check size={13} className="text-white" />}
                   </span>
                   {verified ? "Doğrulama tamamlandı" : "İnsan olduğumu doğruluyorum"}
-                  <ShieldCheck size={16} className="ml-auto text-gray-300" />
+                  <ShieldCheck size={16} className="ml-auto text-gray-500" />
                 </button>
               </div>
 
-              {/* Sonuç */}
               {result && (
-                <div className="bg-green-50 dark:bg-green-500/10 rounded-xl p-4">
-                  <p className="text-xs text-green-700 dark:text-green-300 mb-1">{result.label}</p>
+                <div className="bg-[#FFF785]/10 border border-[#FFF785]/20 rounded-xl p-4">
+                  <p className="text-xs text-[#FFF785] mb-2 uppercase tracking-wider">{result.label}</p>
                   <div className="flex items-center justify-between">
-                    <p className="font-mono text-3xl font-black tracking-[0.3em] text-green-700 dark:text-green-300 select-all">
+                    <p className="font-mono text-3xl font-black tracking-[0.3em] text-[#FFF785] select-all">
                       {result.code}
                     </p>
-                    <button onClick={copyCode} className="p-2 rounded-lg bg-green-100 dark:bg-green-500/20 hover:bg-green-200 transition">
-                      {copied ? <Check size={18} className="text-green-600" /> : <Copy size={18} className="text-green-600" />}
+                    <button onClick={copyCode} className="p-2.5 rounded-lg bg-[#FFF785]/15 hover:bg-[#FFF785]/25 transition">
+                      {copied ? <Check size={18} className="text-[#FFF785]" /> : <Copy size={18} className="text-[#FFF785]" />}
                     </button>
                   </div>
                 </div>
               )}
-              {error && <p className="text-red-600 text-sm">{error}</p>}
+              {error && <p className="text-[#FFF785] text-sm">{error}</p>}
 
-              {/* Butonlar */}
               <div className="flex gap-2">
                 <button
                   onClick={generate}
                   disabled={!verified || genLoading}
-                  className="flex-1 inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-[#FFF785] hover:bg-[#FFE74F] text-[#0a0a0a] py-3.5 rounded-full text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_15px_40px_-10px_rgba(255,247,133,0.6)]"
                 >
                   <Shield size={16} /> {genLoading ? "Üretiliyor..." : "Guard Kodu Al"}
                 </button>
@@ -166,7 +172,7 @@ export default function GuardPage() {
                   onClick={generate}
                   disabled={!verified || genLoading || !result}
                   title="Yenile"
-                  className="px-4 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-40"
+                  className="px-4 rounded-full border border-white/10 text-gray-300 hover:bg-white/5 transition disabled:opacity-40"
                 >
                   <RefreshCw size={16} />
                 </button>
@@ -174,19 +180,18 @@ export default function GuardPage() {
             </div>
           )}
 
-          {/* Bilgilendirme */}
-          <div className="mt-8 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6">
-            <h2 className="font-bold text-gray-900 dark:text-white mb-3 text-sm">KadeStore Guard nedir?</h2>
-            <div className="space-y-2">
+          <div className="mt-8 bg-[#111111] rounded-3xl border border-white/5 p-6">
+            <h2 className="font-display font-bold text-white mb-4">KadeStore Guard nedir?</h2>
+            <div className="space-y-3">
               {[
                 "Tüm hesaplar teslim öncesi doğrulanır",
                 "Geçersiz ürün durumunda tam iade garantisi",
                 "Guard kodları yalnızca size özel ve tek kullanımlıktır",
                 "256-bit SSL şifreleme ile güvenli erişim",
               ].map((t) => (
-                <div key={t} className="flex items-center gap-2.5">
-                  <Check size={15} className="text-green-500 flex-shrink-0" />
-                  <p className="text-sm text-gray-600 dark:text-gray-300">{t}</p>
+                <div key={t} className="flex items-center gap-3">
+                  <Check size={14} className="text-[#FFF785] flex-shrink-0" />
+                  <p className="text-sm text-gray-300">{t}</p>
                 </div>
               ))}
             </div>

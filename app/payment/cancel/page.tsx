@@ -13,15 +13,15 @@ function CancelContent() {
   return (
     <div className="max-w-lg mx-auto text-center">
       <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-6">
-        <XCircle size={40} className="text-red-500" />
+        <XCircle size={40} className="text-[#FFF785]" />
       </div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Ödeme İptal Edildi</h1>
+      <h1 className="text-3xl font-bold text-white mb-2">Ödeme İptal Edildi</h1>
       <p className="text-gray-500 mb-8">
         Ödeme işleminiz tamamlanamadı veya iptal edildi. Tekrar denemek için aşağıdaki butonu kullanın.
       </p>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6 text-left">
-        <h2 className="font-semibold text-gray-900 mb-3">Sık Karşılaşılan Sorunlar</h2>
+      <div className="bg-[#111111] rounded-2xl border border-white/5 shadow-2xl p-6 mb-6 text-left">
+        <h2 className="font-semibold text-white mb-3">Sık Karşılaşılan Sorunlar</h2>
         <ul className="space-y-2 text-sm text-gray-500">
           <li>• Kart bilgilerinizi kontrol edin</li>
           <li>• 3D Secure doğrulamasını tamamladığınızdan emin olun</li>
@@ -31,10 +31,10 @@ function CancelContent() {
       </div>
 
       <div className="flex gap-3 justify-center">
-        <Link href="/games" className="inline-flex items-center gap-2 border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition">
+        <Link href="/games" className="inline-flex items-center gap-2 border border-white/10 text-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-[#0a0a0a] transition">
           <ArrowLeft size={16} /> Oyunlara Dön
         </Link>
-        <Link href="/games" className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition">
+        <Link href="/games" className="inline-flex items-center gap-2 bg-[#FFF785] hover:bg-[#FFF785] text-[#0a0a0a] px-5 py-2.5 rounded-xl text-sm font-medium transition">
           <RefreshCw size={16} /> Tekrar Dene
         </Link>
       </div>
@@ -46,7 +46,7 @@ export default function PaymentCancelPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 bg-gray-50 py-20 px-4">
+      <main className="flex-1 bg-[#0a0a0a] py-20 px-4">
         <Suspense fallback={<div />}>
           <CancelContent />
         </Suspense>

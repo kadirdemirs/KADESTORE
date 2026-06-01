@@ -78,17 +78,17 @@ export default function AdminAccountsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Hesap Stoğu</h1>
+        <h1 className="text-2xl font-bold text-white">Hesap Stoğu</h1>
         <p className="text-gray-500 text-sm">Hazır hesap teslimi yapılan oyunlar için kullanıcı bilgilerini yönetin.</p>
       </div>
 
       {/* Oyun seçimi + özet */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-5">
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">Oyun</label>
+      <div className="bg-[#111111] rounded-2xl border border-white/5 shadow-2xl p-5 mb-5">
+        <label className="block text-sm font-medium text-gray-200 mb-1.5">Oyun</label>
         <select
           value={gameId}
           onChange={(e) => setGameId(e.target.value)}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-400 bg-white"
+          className="w-full border border-white/10 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#FFF785] bg-[#111111]"
         >
           {games.map((g) => (
             <option key={g.id} value={g.id}>
@@ -97,19 +97,19 @@ export default function AdminAccountsPage() {
           ))}
         </select>
         <div className="flex gap-4 mt-3 text-sm">
-          <span className="text-gray-500">Toplam: <strong className="text-gray-900">{accounts.length}</strong></span>
+          <span className="text-gray-500">Toplam: <strong className="text-white">{accounts.length}</strong></span>
           <span className="text-green-600">Kullanılabilir: <strong>{available}</strong></span>
           <span className="text-blue-600">Teslim edilen: <strong>{accounts.length - available}</strong></span>
         </div>
       </div>
 
       {/* Toplu ekleme */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-5">
-        <h2 className="font-bold text-gray-900 flex items-center gap-2 mb-1">
-          <Plus size={16} className="text-amber-500" /> Toplu Hesap Ekle
+      <div className="bg-[#111111] rounded-2xl border border-white/5 shadow-2xl p-5 mb-5">
+        <h2 className="font-bold text-white flex items-center gap-2 mb-1">
+          <Plus size={16} className="text-[#FFF785]" /> Toplu Hesap Ekle
         </h2>
-        <p className="text-xs text-gray-400 mb-3">
-          Her satıra bir hesap: <code className="bg-gray-100 px-1.5 py-0.5 rounded">kullaniciadi:sifre:sharedSecret:not</code>
+        <p className="text-xs text-gray-500 mb-3">
+          Her satıra bir hesap: <code className="bg-white/5 px-1.5 py-0.5 rounded">kullaniciadi:sifre:sharedSecret:not</code>
           {" "}— sharedSecret ve not isteğe bağlı.
         </p>
         <textarea
@@ -117,35 +117,35 @@ export default function AdminAccountsPage() {
           onChange={(e) => setBulk(e.target.value)}
           rows={6}
           placeholder={"CovertDrake4654:Pass1234:base64secret==:Hesap 8\nNightOwl221:Gizli987"}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm font-mono focus:outline-none focus:border-amber-400 resize-none"
+          className="w-full border border-white/10 rounded-xl px-3 py-2.5 text-sm font-mono focus:outline-none focus:border-[#FFF785] resize-none"
         />
         {msg && (
-          <div className={`mt-3 text-sm p-3 rounded-xl ${msg.type === "ok" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
+          <div className={`mt-3 text-sm p-3 rounded-xl ${msg.type === "ok" ? "bg-green-50 text-green-700" : "bg-[#FFF785]/10 text-[#FFE74F]"}`}>
             {msg.text}
           </div>
         )}
         <button
           onClick={handleAdd}
           disabled={saving || !bulk.trim()}
-          className="mt-3 inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition disabled:opacity-60"
+          className="mt-3 inline-flex items-center gap-2 bg-[#FFF785] hover:bg-[#FFF785] text-[#0a0a0a] px-4 py-2 rounded-xl text-sm font-medium transition disabled:opacity-60"
         >
           <Plus size={15} /> {saving ? "Ekleniyor..." : "Hesapları Ekle"}
         </button>
       </div>
 
       {/* Liste */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2">
-          <Users size={16} className="text-gray-400" />
-          <span className="text-sm font-semibold text-gray-700">{selectedGame?.title || "Hesaplar"}</span>
+      <div className="bg-[#111111] rounded-2xl border border-white/5 shadow-2xl overflow-hidden">
+        <div className="px-5 py-3 border-b border-white/5 flex items-center gap-2">
+          <Users size={16} className="text-gray-500" />
+          <span className="text-sm font-semibold text-gray-200">{selectedGame?.title || "Hesaplar"}</span>
         </div>
         {loading ? (
-          <div className="text-center py-12 text-gray-400">Yükleniyor...</div>
+          <div className="text-center py-12 text-gray-500">Yükleniyor...</div>
         ) : accounts.length === 0 ? (
-          <div className="text-center py-12 text-gray-400">Bu oyun için hesap eklenmemiş.</div>
+          <div className="text-center py-12 text-gray-500">Bu oyun için hesap eklenmemiş.</div>
         ) : (
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-100">
+            <thead className="bg-[#0a0a0a] border-b border-white/5">
               <tr>
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Kullanıcı Adı</th>
                 <th className="text-center px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Şifre</th>
@@ -157,13 +157,13 @@ export default function AdminAccountsPage() {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {accounts.map((a) => (
-                <tr key={a.id} className="hover:bg-gray-50 transition">
-                  <td className="px-5 py-3 font-mono text-gray-900">{a.steamUsername || "—"}</td>
+                <tr key={a.id} className="hover:bg-[#0a0a0a] transition">
+                  <td className="px-5 py-3 font-mono text-white">{a.steamUsername || "—"}</td>
                   <td className="px-4 py-3 text-center">
-                    {a.hasPassword ? <KeyRound size={15} className="text-gray-400 mx-auto" /> : <span className="text-gray-300">—</span>}
+                    {a.hasPassword ? <KeyRound size={15} className="text-gray-500 mx-auto" /> : <span className="text-gray-600">—</span>}
                   </td>
                   <td className="px-4 py-3 text-center">
-                    {a.hasGuard ? <Shield size={15} className="text-blue-500 mx-auto" /> : <span className="text-gray-300">—</span>}
+                    {a.hasGuard ? <Shield size={15} className="text-blue-500 mx-auto" /> : <span className="text-gray-600">—</span>}
                   </td>
                   <td className="px-4 py-3 text-center">
                     <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${a.isUsed ? "bg-blue-100 text-blue-700" : "bg-green-100 text-green-700"}`}>
@@ -173,7 +173,7 @@ export default function AdminAccountsPage() {
                   <td className="px-4 py-3 text-gray-500 max-w-40 truncate">{a.accountNote || "—"}</td>
                   <td className="px-4 py-3 text-right">
                     <button onClick={() => handleDelete(a.id)} disabled={a.isUsed}
-                      className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-30 disabled:cursor-not-allowed">
+                      className="p-1.5 text-gray-500 hover:text-[#FFF785] hover:bg-[#FFF785]/10 rounded-lg transition disabled:opacity-30 disabled:cursor-not-allowed">
                       <Trash2 size={14} />
                     </button>
                   </td>

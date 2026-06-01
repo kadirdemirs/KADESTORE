@@ -3,10 +3,12 @@ import Footer from "@/components/Footer";
 import TickerBar from "@/components/TickerBar";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Zap, Shield, Headphones, ArrowRight } from "lucide-react";
+import { Zap, ShieldCheck, Headphones, ArrowUpRight, Gamepad2, KeyRound, Sparkles } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import CountUp from "@/components/CountUp";
+import HeroBackdrop from "@/components/HeroBackdrop";
+import GameCard from "@/components/GameCard";
 
-// DB'den canlı veri okuduğu için her istekte render edilir (build-time prerender DB ister)
 export const dynamic = "force-dynamic";
 
 async function getData() {
@@ -19,6 +21,33 @@ async function getData() {
   return { games, totalUsers, totalGames, recentReviews };
 }
 
+const SERVICES = [
+  {
+    title: "Anında Teslimat",
+    desc: "Ödeme tamamlandıktan saniyeler sonra anahtar veya hesap bilgileri otomatik olarak hesabınıza tanımlanır.",
+    icon: Zap,
+    href: "/games",
+  },
+  {
+    title: "Güvenli Alışveriş",
+    desc: "256-bit SSL şifreleme ve Shopier altyapısı ile ödemeleriniz tamamen güvende. Hiçbir bilgi 3. taraflarla paylaşılmaz.",
+    icon: ShieldCheck,
+    href: "/privacy",
+  },
+  {
+    title: "Steam Guard Kodu",
+    desc: "Hazır hesap satın alanlar için yerleşik Steam Guard üreteci — 30 saniyede bir taze kod, herhangi bir uygulamaya gerek yok.",
+    icon: KeyRound,
+    href: "/guard",
+  },
+  {
+    title: "7/24 Hızlı Destek",
+    desc: "Ortalama 15 dakika içinde yanıt veren, çözüm odaklı destek ekibimiz her zaman ulaşılabilir.",
+    icon: Headphones,
+    href: "/verify",
+  },
+];
+
 export default async function Home() {
   const { games, totalUsers, totalGames, recentReviews } = await getData();
 
@@ -27,135 +56,202 @@ export default async function Home() {
       ? recentReviews
       : [
           { id: "1", comment: "Harika bir platform! Hızlı teslimat ve uygun fiyatlar. Her şey sorunsuz çalışıyor.", rating: 5, user: { name: "Ahmet K." } },
-          { id: "2", comment: "Anahtarlar anında geldi. Çok memnunum!", rating: 5, user: { name: "Melis D." } },
-          { id: "3", comment: "Fiyatlar çok uygun, hizmet kalitesi mükemmel.", rating: 5, user: { name: "Emre S." } },
+          { id: "2", comment: "Anahtarlar anında geldi, Steam Guard üreteci özelliği inanılmaz pratik.", rating: 5, user: { name: "Melis D." } },
+          { id: "3", comment: "Fiyatlar çok uygun, destek ekibi her sorunu hızlıca çözdü.", rating: 5, user: { name: "Emre S." } },
         ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#0a0a0a] text-gray-100">
       <Header />
-      <TickerBar games={games} />
 
-      {/* Hero */}
-      <section className="bg-white py-20 px-4">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <Reveal y={28}>
-            <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-              AKTİF &amp; GÜVENİLİR
-            </div>
-            <h1 className="text-5xl font-black text-gray-900 leading-tight mb-4">
-              Dijital oyunlarda{" "}
-              <span className="text-amber-500">en iyi adres.</span>
+      {/* HERO */}
+      <section className="relative overflow-hidden pt-32 pb-32 px-4">
+        {/* Glow */}
+        <div className="absolute inset-0 red-glow opacity-70" />
+        <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-[#FFF785]/10 blur-[120px]" />
+
+        {/* Grain */}
+        <div className="absolute inset-0 grain" />
+
+        {/* Controller SVG + rays */}
+        <HeroBackdrop />
+
+        {/* Sol köşe meta */}
+        <div className="absolute top-32 left-6 hidden md:block">
+          <p className="text-[10px] font-bold text-[#FFF785] tracking-[0.3em] mb-3">TESLİMAT.</p>
+          <p className="text-[10px] font-bold text-[#FFF785] tracking-[0.3em] mb-3">GÜVENLİK.</p>
+          <p className="text-[10px] font-bold text-[#FFF785] tracking-[0.3em]">DESTEK.</p>
+        </div>
+
+        {/* Sağ köşe süreç adımları */}
+        <div className="absolute top-32 right-6 hidden md:block text-right">
+          <p className="text-[10px] text-gray-500 tracking-[0.2em] mb-1">01 // KATALOG</p>
+          <p className="text-[10px] text-gray-500 tracking-[0.2em] mb-1">02 // ÖDEME</p>
+          <p className="text-[10px] text-gray-500 tracking-[0.2em] mb-1">03 // TESLİMAT</p>
+          <p className="text-[10px] text-[#FFF785] tracking-[0.2em]">04 // OYNA</p>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto text-center">
+          <Reveal y={28} delay={0.05}>
+            <h1 className="font-display text-[18vw] md:text-[14rem] lg:text-[18rem] leading-[0.85] font-black text-white tracking-tighter">
+              kade<span className="text-[#FFF785]">store</span>
             </h1>
-            <p className="text-gray-500 text-lg mb-8 max-w-md">
-              Uygun fiyatlar, anında teslimat ve kesintisiz destek ile oyun deneyiminizi bir üst seviyeye taşıyın.
+          </Reveal>
+
+          <Reveal y={20} delay={0.15}>
+            <p className="text-xs md:text-sm tracking-[0.4em] text-gray-400 uppercase mt-6">
+              <span className="text-white">Dijital</span> oyunlar <span className="text-[#FFF785]">anında teslim.</span>
             </p>
-            <div className="flex flex-wrap gap-3">
-              <Link href="/games" className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl font-semibold transition">
-                Oyunları Keşfet <ArrowRight size={18} />
+          </Reveal>
+
+          <Reveal y={20} delay={0.25}>
+            <div className="flex flex-wrap justify-center items-center gap-3 mt-10">
+              <Link
+                href="/games"
+                className="group inline-flex items-center gap-2 bg-[#FFF785] hover:bg-[#FFE74F] text-[#0a0a0a] px-7 py-3.5 rounded-full text-sm font-semibold transition shadow-[0_20px_50px_-15px_rgba(255,247,133,0.7)]"
+              >
+                Oyunları Keşfet
+                <span className="w-6 h-6 rounded-full bg-[#0a0a0a]/15 flex items-center justify-center group-hover:bg-[#0a0a0a]/30 transition">
+                  <ArrowUpRight size={14} />
+                </span>
               </Link>
-              <Link href="/register" className="inline-flex items-center gap-2 border border-gray-200 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition">
+              <Link
+                href="/register"
+                className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 backdrop-blur border border-white/10 text-white px-7 py-3.5 rounded-full text-sm font-semibold transition"
+              >
                 Ücretsiz Kayıt
               </Link>
             </div>
-            <div className="flex items-center gap-3 mt-8">
-              <div className="flex -space-x-2">
-                {["A", "Z", "M", "S"].map((l) => (
-                  <div key={l} className="w-8 h-8 rounded-full bg-amber-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold">{l}</div>
-                ))}
-              </div>
+          </Reveal>
+
+          {/* Mini stats */}
+          <Reveal y={20} delay={0.35}>
+            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 mt-16 text-left">
               <div>
-                <div className="flex text-amber-400 text-sm">★★★★★</div>
-                <p className="text-xs text-gray-500">
-                  {totalUsers > 9000 ? `${(totalUsers / 1000).toFixed(0)}K+` : "9,000+"} mutlu kullanıcı
+                <p className="font-display text-4xl md:text-5xl font-black text-white">
+                  <CountUp to={totalUsers > 9000 ? Math.round(totalUsers / 1000) : 9} suffix="K+" />
                 </p>
+                <p className="text-[10px] tracking-[0.2em] text-gray-500 uppercase mt-1">Mutlu Müşteri</p>
               </div>
-            </div>
-          </Reveal>
-
-          <Reveal y={28} delay={0.1} className="flex flex-col gap-4">
-            <div className="bg-gray-900 rounded-2xl p-5 text-white">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center">
-                  <Zap size={20} className="text-white" />
-                </div>
-                <div>
-                  <p className="font-semibold">Anında Teslimat</p>
-                  <p className="text-xs text-gray-400">Ortalama 30 saniye</p>
-                </div>
+              <div className="w-px h-12 bg-white/10 hidden md:block" />
+              <div>
+                <p className="font-display text-4xl md:text-5xl font-black text-white">
+                  <CountUp to={totalGames > 0 ? totalGames : 500} suffix="+" />
+                </p>
+                <p className="text-[10px] tracking-[0.2em] text-gray-500 uppercase mt-1">Dijital Oyun</p>
               </div>
-              <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
-                <div className="h-full bg-amber-500 rounded-full w-4/5"></div>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-                <p className="text-3xl font-black text-gray-900">{totalGames > 0 ? `${totalGames}+` : "500+"}</p>
-                <p className="text-sm text-gray-500">Oyun çeşidi</p>
-              </div>
-              <div className="bg-green-500 rounded-2xl p-5 text-white">
-                <div className="flex items-center gap-2 mb-1">
-                  <Shield size={16} />
-                  <p className="font-semibold text-sm">Güvenli Alışveriş</p>
-                </div>
-                <p className="text-xs opacity-80">256-bit şifreleme</p>
-              </div>
-            </div>
-            <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-              <p className="text-sm text-gray-500 mb-1">MÜŞTERİ MEMNUNİYETİ</p>
-              <div className="flex items-end gap-2">
-                <p className="text-4xl font-black text-gray-900">4.9</p>
-                <div className="flex text-amber-400 mb-1 text-sm">★★★★★</div>
+              <div className="w-px h-12 bg-white/10 hidden md:block" />
+              <div>
+                <p className="font-display text-4xl md:text-5xl font-black text-white">
+                  <CountUp to={4.9} decimals={1} /><span className="text-[#FFF785]">/5</span>
+                </p>
+                <p className="text-[10px] tracking-[0.2em] text-gray-500 uppercase mt-1">Kullanıcı Puanı</p>
               </div>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="bg-gray-50 py-14 px-4">
-        <div className="max-w-7xl mx-auto grid grid-cols-3 gap-8 text-center">
-          <div>
-            <p className="text-4xl font-black text-gray-900">{totalUsers > 9000 ? `${(totalUsers / 1000).toFixed(0)}K+` : "9K+"}</p>
-            <p className="text-sm text-gray-500 mt-1">Aktif Kullanıcı</p>
-          </div>
-          <div>
-            <p className="text-4xl font-black text-gray-900">{totalGames > 0 ? `${totalGames}+` : "500+"}</p>
-            <p className="text-sm text-gray-500 mt-1">Dijital Oyun</p>
-          </div>
-          <div>
-            <p className="text-4xl font-black text-gray-900">4.9/5</p>
-            <p className="text-sm text-gray-500 mt-1">Kullanıcı Puanı</p>
-          </div>
+      {/* Brand strip / kategori marquee (geido referansındaki gibi) */}
+      <div className="border-y border-white/5 bg-black overflow-hidden">
+        <div className="flex marquee-x" style={{ width: "max-content" }}>
+          {[...Array(2)].flatMap((_, k) =>
+            ["STEAM", "EPIC GAMES", "XBOX", "PLAYSTATION", "NINTENDO", "GOG", "UBISOFT", "BATTLE.NET"].map((p) => (
+              <div key={`${k}-${p}`} className="flex items-center gap-12 px-12 py-4 flex-shrink-0">
+                <span className="text-xl md:text-2xl font-display font-black text-white/80 tracking-tight">{p}</span>
+                <span className="text-[#FFF785] text-lg">●</span>
+              </div>
+            ))
+          )}
         </div>
-      </section>
+      </div>
 
-      {/* Game Grid */}
-      {games.length > 0 && (
-        <section className="bg-white py-16 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-gray-900">Öne Çıkan Oyunlar</h2>
-              <Link href="/games" className="text-sm text-amber-500 hover:text-amber-600 font-medium flex items-center gap-1">
-                Tümünü Gör <ArrowRight size={14} />
-              </Link>
+      <TickerBar games={games} />
+
+      {/* HİZMETLER (4 kırmızı kart) */}
+      <section className="bg-[#0a0a0a] py-24 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+            <div>
+              <span className="inline-block bg-[#FFF785]/10 text-[#FFF785] text-xs font-semibold px-3 py-1.5 rounded-full mb-4 border border-[#FFF785]/20">
+                Hizmetlerimiz
+              </span>
+              <h2 className="font-display text-4xl md:text-5xl font-black text-white leading-tight max-w-2xl">
+                Oyun deneyiminizi
+                <br />
+                <span className="text-gray-500">bir üst seviyeye taşıyan</span> servis.
+              </h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {games.map((game, i) => (
-                <Reveal key={game.id} delay={Math.min(i, 7) * 0.06}>
-                  <Link href={`/games/${game.slug}`} className="group block bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-md transition hover:border-amber-200">
-                    <div className="h-36 bg-gradient-to-br from-amber-400 to-orange-500 relative overflow-hidden">
-                      {game.imageUrl && (
-                        <img src={game.imageUrl} alt={game.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                      )}
-                      <span className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded-full">{game.platform}</span>
+            <Link
+              href="/games"
+              className="self-start inline-flex items-center gap-2 border border-white/15 hover:bg-white/5 text-white px-5 py-2.5 rounded-full text-sm transition whitespace-nowrap"
+            >
+              Detaylı Bilgi
+              <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
+                <ArrowUpRight size={12} />
+              </span>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {SERVICES.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <Reveal key={s.title} delay={i * 0.06}>
+                  <Link
+                    href={s.href}
+                    className="group relative flex flex-col justify-between h-full bg-[#FFF785] hover:bg-[#FFE74F] rounded-3xl p-6 overflow-hidden transition min-h-[260px]"
+                  >
+                    {/* Decorative corner glow */}
+                    <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-black/10 blur-2xl opacity-0 group-hover:opacity-100 transition" />
+                    <div className="relative flex items-start justify-between">
+                      <Icon size={28} className="text-[#0a0a0a]" strokeWidth={2.2} />
+                      <span className="w-9 h-9 rounded-full bg-black/10 flex items-center justify-center group-hover:bg-[#0a0a0a] group-hover:text-[#FFF785] text-[#0a0a0a] transition">
+                        <ArrowUpRight size={16} />
+                      </span>
                     </div>
-                    <div className="p-3">
-                      <p className="text-sm font-semibold text-gray-900 truncate">{game.title}</p>
-                      <p className="text-amber-500 font-bold text-sm mt-1">₺{game.price.toFixed(2)}</p>
+                    <div className="relative">
+                      <h3 className="font-display text-xl font-bold text-[#0a0a0a] mb-2">{s.title}</h3>
+                      <p className="text-sm text-[#0a0a0a]/75 leading-relaxed">{s.desc}</p>
                     </div>
                   </Link>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ÖNE ÇIKAN OYUNLAR */}
+      {games.length > 0 && (
+        <section className="bg-[#0a0a0a] py-24 px-4 border-t border-white/5">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+              <div>
+                <span className="inline-block bg-[#FFF785]/10 text-[#FFF785] text-xs font-semibold px-3 py-1.5 rounded-full mb-4 border border-[#FFF785]/20">
+                  Kataloğumuz
+                </span>
+                <h2 className="font-display text-4xl md:text-5xl font-black text-white leading-tight">
+                  Fark Yaratan Oyunlar
+                  <br />
+                  <span className="text-gray-500">Stokta sizi bekliyor</span>
+                </h2>
+              </div>
+              <Link
+                href="/games"
+                className="self-start inline-flex items-center gap-2 bg-[#FFF785] hover:bg-[#FFE74F] text-[#0a0a0a] px-5 py-2.5 rounded-full text-sm font-semibold transition whitespace-nowrap"
+              >
+                Tüm Oyunları Gör
+                <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+                  <ArrowUpRight size={12} />
+                </span>
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
+              {games.map((game, i) => (
+                <Reveal key={game.id} delay={Math.min(i, 7) * 0.04}>
+                  <GameCard game={game} />
                 </Reveal>
               ))}
             </div>
@@ -163,122 +259,151 @@ export default async function Home() {
         </section>
       )}
 
-      {/* Why KadeStore */}
-      <section className="bg-gray-50 py-16 px-4">
+      {/* NASIL ÇALIŞIR */}
+      <section className="bg-[#0a0a0a] py-24 px-4 border-t border-white/5">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <p className="text-amber-500 text-xs font-bold uppercase tracking-wider mb-2">AVANTAJLARIMIZ</p>
-            <h2 className="text-3xl font-bold text-gray-900">Neden KadeStore?</h2>
+          <div className="text-center mb-16">
+            <span className="inline-block bg-[#FFF785]/10 text-[#FFF785] text-xs font-semibold px-3 py-1.5 rounded-full mb-4 border border-[#FFF785]/20">
+              Süreç
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl font-black text-white">
+              Üç adımda <span className="text-[#FFF785]">oyunda</span>.
+            </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-gray-900 rounded-2xl p-6 text-white">
-              <div className="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center mb-4">
-                <Zap size={24} />
-              </div>
-              <h3 className="font-bold text-lg mb-2">Anında Teslimat</h3>
-              <p className="text-gray-400 text-sm">Satın alma işlemi tamamlandıktan sonra oyununuz saniyeler içinde hesabınıza tanımlanır.</p>
-            </div>
-            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-              <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center mb-4">
-                <Shield size={24} className="text-green-600" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Kesintisiz Hizmet</h3>
-              <p className="text-gray-500 text-sm">Sunucularımız her zaman aktif. Oyunlarınıza istediğiniz zaman erişin.</p>
-              <div className="flex items-center gap-2 mt-3">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                <span className="text-xs text-green-600 font-medium">Sistem aktif</span>
-              </div>
-            </div>
-            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-              <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mb-4">
-                <Headphones size={24} className="text-blue-600" />
-              </div>
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Hızlı Destek</h3>
-              <p className="text-gray-500 text-sm">Sorun yaşandığında hızlı ve çözüm odaklı destek ekibimiz yanınızda.</p>
-              <p className="text-xs text-blue-600 font-medium mt-3">Ort. yanıt süresi: &lt;15 dk</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="bg-white py-16 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-amber-500 text-xs font-bold uppercase tracking-wider mb-2">ADIM ADIM</p>
-          <h2 className="text-3xl font-bold text-gray-900 mb-12">Nasıl çalışır?</h2>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-12">
             {[
-              { step: "1", title: "Kayıt Ol", desc: "Ücretsiz hesap oluştur" },
-              { step: "2", title: "Anahtar Al", desc: "İstediğin oyunu satın al" },
-              { step: "3", title: "Oyna!", desc: "Anında hesabına tanımla" },
-            ].map((item) => (
-              <div key={item.step} className="flex flex-col items-center">
-                <div className="w-14 h-14 bg-amber-500 rounded-full flex items-center justify-center text-white font-black text-lg mb-3">
-                  {item.step}
+              { step: "01", title: "Kayıt Ol", desc: "Saniyeler içinde ücretsiz hesap oluştur." },
+              { step: "02", title: "Anahtar Al", desc: "İstediğin oyunu seç, güvenle satın al." },
+              { step: "03", title: "Oyna", desc: "Anında hesabına tanımla, oynamaya başla." },
+            ].map((item, i) => (
+              <Reveal key={item.step} delay={i * 0.08}>
+                <div className="relative bg-[#111111] border border-white/5 rounded-3xl p-8 h-full hover:border-[#FFF785]/30 transition">
+                  <p className="font-display text-7xl font-black text-[#FFF785]/20 leading-none">{item.step}</p>
+                  <h3 className="font-display text-2xl font-bold text-white mt-6">{item.title}</h3>
+                  <p className="text-sm text-gray-400 mt-2 leading-relaxed">{item.desc}</p>
+                  <Sparkles size={16} className="absolute top-6 right-6 text-[#FFF785]/40" />
                 </div>
-                <h3 className="font-bold text-gray-900">{item.title}</h3>
-                <p className="text-sm text-gray-500 mt-1">{item.desc}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="bg-gray-50 py-16 px-4">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <p className="text-amber-500 text-xs font-bold uppercase tracking-wider mb-2">KULLANICI YORUMLARI</p>
-            <h2 className="text-3xl font-bold text-gray-900">Müşterilerimiz ne diyor?</h2>
-            <p className="text-gray-500 mt-2 text-sm">Binlerce kullanıcımız bize güveniyor.</p>
+      {/* MÜŞTERİ YORUMLARI (Blog gibi 3 büyük kart) */}
+      <section className="bg-[#0a0a0a] py-24 px-4 border-t border-white/5">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+            <div>
+              <span className="inline-block bg-[#FFF785]/10 text-[#FFF785] text-xs font-semibold px-3 py-1.5 rounded-full mb-4 border border-[#FFF785]/20">
+                Topluluk
+              </span>
+              <h2 className="font-display text-4xl md:text-5xl font-black text-white leading-tight">
+                Müşterilerimiz
+                <br />
+                <span className="text-gray-500">ne diyor?</span>
+              </h2>
+            </div>
+            <Link
+              href="/register"
+              className="self-start inline-flex items-center gap-2 border border-white/15 hover:bg-white/5 text-white px-5 py-2.5 rounded-full text-sm transition whitespace-nowrap"
+            >
+              Sen de Katıl
+              <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
+                <ArrowUpRight size={12} />
+              </span>
+            </Link>
           </div>
-          <div className="space-y-4">
-            {reviews.map((review: any) => (
-              <div key={review.id} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-                <div className="flex text-amber-400 text-sm mb-2">{"★".repeat(review.rating)}</div>
-                <p className="text-gray-700 text-sm italic">&ldquo;{review.comment}&rdquo;</p>
-                <div className="flex items-center gap-2 mt-3">
-                  <div className="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center text-white text-xs font-bold">
-                    {review.user.name.charAt(0)}
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {reviews.map((review: any, i: number) => (
+              <Reveal key={review.id} delay={i * 0.08}>
+                <div className="bg-[#111111] border border-white/5 rounded-3xl overflow-hidden hover:border-[#FFF785]/30 transition group h-full flex flex-col">
+                  <div className="h-44 bg-gradient-to-br from-[#FFE74F]/40 via-[#1a1a1a] to-[#0a0a0a] relative flex items-center justify-center">
+                    <span className="font-display text-7xl font-black text-white/10">"</span>
+                    <div className="absolute inset-0 grain opacity-50" />
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">{review.user.name}</p>
-                    <p className="text-xs text-gray-400">Doğrulanmış Kullanıcı</p>
+                  <div className="p-6 flex-1 flex flex-col">
+                    <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-gray-500 mb-3">
+                      <span>KADESTORE</span>
+                      <span className="text-[#FFF785]">●</span>
+                      <span>Doğrulanmış</span>
+                    </div>
+                    <p className="text-white font-medium leading-relaxed flex-1">"{review.comment}"</p>
+                    <div className="flex items-center justify-between mt-6 pt-6 border-t border-white/5">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-[#FFF785] flex items-center justify-center text-[#0a0a0a] text-xs font-bold">
+                          {review.user.name.charAt(0)}
+                        </div>
+                        <p className="text-sm text-white font-semibold">{review.user.name}</p>
+                      </div>
+                      <div className="text-[#FFF785] text-sm">{"★".repeat(review.rating)}</div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-gray-900 py-16 px-4">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      {/* CTA SİYAH BLOK */}
+      <section className="bg-black py-24 px-4 relative overflow-hidden border-t border-white/5">
+        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-[#FFF785]/10 blur-[120px]" />
+        <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full bg-[#FFF785]/10 blur-[120px]" />
+        <div className="absolute inset-0 grain opacity-60" />
+
+        <div className="relative max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-3xl font-bold text-white mb-3">Hemen başlayın, oyun dünyasına adım atın.</h2>
-            <p className="text-gray-400 text-sm mb-6">Ücretsiz hesap oluşturun, mağazadaki yüzlerce oyunu keşfedin.</p>
-            <div className="flex flex-wrap gap-3">
-              <Link href="/games" className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl font-semibold transition">
-                Alışverişe Başla <ArrowRight size={18} />
+            <span className="inline-block bg-[#FFF785]/10 text-[#FFF785] text-xs font-semibold px-3 py-1.5 rounded-full mb-6 border border-[#FFF785]/20">
+              Başlayalım
+            </span>
+            <h2 className="font-display text-5xl md:text-6xl font-black text-white leading-[0.95] tracking-tight">
+              Oyun dünyasına
+              <br />
+              <span className="text-[#FFF785]">adım atın.</span>
+            </h2>
+            <p className="text-gray-400 mt-6 max-w-md">
+              Ücretsiz hesap oluşturun, dakikalar içinde ilk oyununuza sahip olun.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-8">
+              <Link
+                href="/games"
+                className="group inline-flex items-center gap-2 bg-[#FFF785] hover:bg-[#FFE74F] text-[#0a0a0a] px-7 py-3.5 rounded-full text-sm font-semibold transition shadow-[0_20px_50px_-15px_rgba(255,247,133,0.7)]"
+              >
+                Alışverişe Başla
+                <span className="w-6 h-6 rounded-full bg-[#0a0a0a]/15 flex items-center justify-center group-hover:bg-[#0a0a0a]/30 transition">
+                  <ArrowUpRight size={14} />
+                </span>
               </Link>
-              <Link href="/register" className="inline-flex items-center gap-2 border border-gray-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition">
-                Kayıt Ol
+              <Link
+                href="/register"
+                className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 backdrop-blur border border-white/10 text-white px-7 py-3.5 rounded-full text-sm font-semibold transition"
+              >
+                Ücretsiz Kayıt
               </Link>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-6 text-center">
-            <div>
-              <p className="text-4xl font-black text-white">{totalGames > 0 ? `${totalGames}+` : "500+"}</p>
-              <p className="text-gray-400 text-sm">oyun sizi bekliyor</p>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur">
+              <p className="font-display text-5xl font-black text-white">
+                <CountUp to={totalGames > 0 ? totalGames : 500} suffix="+" />
+              </p>
+              <p className="text-xs text-gray-400 uppercase tracking-wider mt-2">Oyun çeşidi</p>
             </div>
-            <div>
-              <p className="text-4xl font-black text-white">{totalUsers > 9000 ? `${(totalUsers / 1000).toFixed(0)}K+` : "9K+"}</p>
-              <p className="text-gray-400 text-sm">KULLANICI</p>
+            <div className="bg-[#FFF785] rounded-3xl p-6">
+              <p className="font-display text-5xl font-black text-[#0a0a0a]">7/24</p>
+              <p className="text-xs text-[#0a0a0a]/70 uppercase tracking-wider mt-2 font-semibold">Aktif Destek</p>
             </div>
-            <div>
-              <p className="text-4xl font-black text-white">7/24</p>
-              <p className="text-gray-400 text-sm">DESTEK</p>
+            <div className="bg-[#FFF785] rounded-3xl p-6">
+              <p className="font-display text-5xl font-black text-[#0a0a0a]">
+                <CountUp to={totalUsers > 9000 ? Math.round(totalUsers / 1000) : 9} suffix="K+" />
+              </p>
+              <p className="text-xs text-[#0a0a0a]/70 uppercase tracking-wider mt-2 font-semibold">Mutlu Müşteri</p>
+            </div>
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur">
+              <p className="font-display text-5xl font-black text-white">~<CountUp to={30} /><span className="text-[#FFF785]">sn</span></p>
+              <p className="text-xs text-gray-400 uppercase tracking-wider mt-2">Ort. Teslimat</p>
             </div>
           </div>
         </div>

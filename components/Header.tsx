@@ -2,76 +2,94 @@
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
-import { Menu, X, Sun, Moon, User, LogOut, Shield } from "lucide-react";
-import { useTheme } from "./ThemeProvider";
+import { Menu, X, User, LogOut, Shield, Globe, ArrowUpRight, Gamepad2, ShoppingCart } from "lucide-react";
+import { useCart } from "./CartProvider";
 
 export default function Header() {
   const { data: session } = useSession();
-  const { theme, toggle } = useTheme();
+  const { count: cartCount } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   return (
-    <header className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 sticky top-0 z-50 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="absolute top-0 inset-x-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5">
+        <div className="relative flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
-            <span className="font-bold text-xl text-gray-900">KadeStore</span>
+          <Link href="/" className="flex items-center gap-2 text-white">
+            <Gamepad2 size={20} className="text-[#FFF785]" />
+            <span className="font-display font-black text-xl tracking-tight">kadestore</span>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
-            <Link href="/" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition">
+          {/* Center Pill Nav — gerçek viewport ortasına sabitlenmiş */}
+          <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1 bg-black/60 backdrop-blur-xl border border-white/10 rounded-full px-2 py-1.5 shadow-2xl">
+            <Link href="/" className="px-4 py-1.5 text-sm text-white hover:text-[#FFF785] transition rounded-full">
               Ana Sayfa
             </Link>
-            <Link href="/games" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition">
+            <Link href="/games" className="px-4 py-1.5 text-sm text-gray-300 hover:text-white transition rounded-full">
               Oyunlar
             </Link>
-            <Link href="/rewards" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition">
+            <Link href="/rewards" className="px-4 py-1.5 text-sm text-gray-300 hover:text-white transition rounded-full">
               Ödüller
             </Link>
             {session && (
-              <Link href="/guard" className="px-4 py-2 text-sm text-green-600 hover:text-green-700 rounded-lg hover:bg-green-50 transition font-medium">
-                Kod Al
-              </Link>
+              <>
+                <Link href="/guard" className="px-4 py-1.5 text-sm text-gray-300 hover:text-white transition rounded-full">
+                  Guard
+                </Link>
+                <Link href="/verify" className="px-4 py-1.5 text-sm text-emerald-400 hover:text-emerald-300 transition rounded-full">
+                  Doğrula
+                </Link>
+              </>
             )}
-            <Link href="/verify" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition">
-              Doğrula
-            </Link>
+            <span className="w-px h-4 bg-white/10 mx-1" />
+            <button className="px-3 py-1.5 text-xs text-gray-400 hover:text-white transition rounded-full flex items-center gap-1.5">
+              <Globe size={13} /> TR
+            </button>
           </nav>
 
-          {/* Right Actions */}
+          {/* Right CTA */}
           <div className="hidden md:flex items-center gap-3">
-            <button onClick={toggle} className="p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
+            <Link
+              href="/sepet"
+              aria-label="Sepet"
+              className="relative p-2 bg-black/60 backdrop-blur-xl border border-white/10 rounded-full text-white hover:border-[#FFF785]/40 transition"
+            >
+              <ShoppingCart size={16} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-[#FFF785] text-[#0a0a0a] text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
             {session ? (
               <div className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                  className="flex items-center gap-2 bg-black/60 backdrop-blur-xl border border-white/10 rounded-full pl-1.5 pr-4 py-1.5 text-sm text-white hover:border-[#FFF785]/40 transition"
                 >
-                  <div className="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-7 h-7 rounded-full bg-[#FFF785] flex items-center justify-center text-[#0a0a0a] text-xs font-bold">
                     {session.user?.name?.charAt(0).toUpperCase()}
                   </div>
                   <span className="max-w-24 truncate">{session.user?.name}</span>
                 </button>
                 {userMenuOpen && (
-                  <div className="absolute right-0 mt-1 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
-                    <Link href="/profile" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                  <div className="absolute right-0 mt-2 w-52 bg-[#111111] border border-white/10 rounded-2xl shadow-2xl py-2 z-50 animate-fadeIn">
+                    <Link href="/profile" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-200 hover:bg-white/5">
                       <User size={15} /> Profilim
                     </Link>
+                    <Link href="/redeem" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-200 hover:bg-white/5">
+                      <Gamepad2 size={15} /> Kod Gir
+                    </Link>
                     {(session.user as any)?.role === "admin" && (
-                      <Link href="/admin" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-amber-600 hover:bg-amber-50">
+                      <Link href="/admin" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-[#FFF785] hover:bg-[#FFF785]/10">
                         <Shield size={15} /> Admin Panel
                       </Link>
                     )}
-                    <hr className="my-1" />
+                    <div className="h-px bg-white/10 my-1" />
                     <button
                       onClick={() => { signOut({ callbackUrl: "/" }); setUserMenuOpen(false); }}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-[#FFF785] hover:bg-[#FFF785]/10 w-full text-left"
                     >
                       <LogOut size={15} /> Çıkış Yap
                     </button>
@@ -79,45 +97,52 @@ export default function Header() {
                 )}
               </div>
             ) : (
-              <>
-                <Link href="/login" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition">
-                  Giriş Yap
-                </Link>
-                <Link href="/register" className="px-4 py-2 text-sm bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium transition">
-                  Kayıt Ol
-                </Link>
-              </>
+              <Link href="/login" className="text-sm text-gray-300 hover:text-white transition px-2">
+                Giriş Yap
+              </Link>
             )}
+            <Link
+              href="/games"
+              className="group inline-flex items-center gap-2 bg-[#FFF785] hover:bg-[#FFE74F] text-[#0a0a0a] px-5 py-2.5 rounded-full text-sm font-semibold transition shadow-[0_10px_30px_-10px_rgba(255,247,133,0.6)]"
+            >
+              Alışverişe Başla
+              <span className="w-5 h-5 rounded-full bg-[#0a0a0a]/15 flex items-center justify-center group-hover:bg-[#0a0a0a]/30 transition">
+                <ArrowUpRight size={12} />
+              </span>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
-          <button className="md:hidden p-2" onClick={() => setMenuOpen(!menuOpen)}>
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          <button
+            className="md:hidden p-2 text-white bg-black/60 backdrop-blur-xl border border-white/10 rounded-full"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-2">
-          <Link href="/" className="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Ana Sayfa</Link>
-          <Link href="/games" className="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Oyunlar</Link>
-          <Link href="/rewards" className="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Ödüller</Link>
-          <Link href="/verify" className="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Doğrula</Link>
+        <div className="md:hidden mx-4 mt-2 bg-[#111111]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-3 space-y-1 animate-fadeIn">
+          <Link href="/" className="block px-3 py-2 text-sm text-white rounded-lg hover:bg-white/5" onClick={() => setMenuOpen(false)}>Ana Sayfa</Link>
+          <Link href="/games" className="block px-3 py-2 text-sm text-gray-200 rounded-lg hover:bg-white/5" onClick={() => setMenuOpen(false)}>Oyunlar</Link>
+          <Link href="/rewards" className="block px-3 py-2 text-sm text-gray-200 rounded-lg hover:bg-white/5" onClick={() => setMenuOpen(false)}>Ödüller</Link>
           {session ? (
             <>
-              <Link href="/redeem" className="block px-3 py-2 text-sm text-amber-600 font-medium rounded-lg hover:bg-amber-50" onClick={() => setMenuOpen(false)}>🎮 Kod Gir</Link>
-              <Link href="/guard" className="block px-3 py-2 text-sm text-green-600 font-medium rounded-lg hover:bg-green-50" onClick={() => setMenuOpen(false)}>🛡️ Kod Al</Link>
-              <Link href="/profile" className="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Profilim</Link>
+              <Link href="/redeem" className="block px-3 py-2 text-sm text-[#FFF785] rounded-lg hover:bg-[#FFF785]/10" onClick={() => setMenuOpen(false)}>Kod Gir</Link>
+              <Link href="/guard" className="block px-3 py-2 text-sm text-[#FFF785] rounded-lg hover:bg-[#FFF785]/10" onClick={() => setMenuOpen(false)}>Guard</Link>
+              <Link href="/verify" className="block px-3 py-2 text-sm text-emerald-400 rounded-lg hover:bg-emerald-500/10" onClick={() => setMenuOpen(false)}>Doğrula</Link>
+              <Link href="/profile" className="block px-3 py-2 text-sm text-gray-200 rounded-lg hover:bg-white/5" onClick={() => setMenuOpen(false)}>Profilim</Link>
               {(session.user as any)?.role === "admin" && (
-                <Link href="/admin" className="block px-3 py-2 text-sm text-amber-600 rounded-lg hover:bg-amber-50" onClick={() => setMenuOpen(false)}>Admin Panel</Link>
+                <Link href="/admin" className="block px-3 py-2 text-sm text-[#FFF785] rounded-lg hover:bg-[#FFF785]/10" onClick={() => setMenuOpen(false)}>Admin Panel</Link>
               )}
-              <button onClick={() => signOut({ callbackUrl: "/" })} className="block w-full text-left px-3 py-2 text-sm text-red-600 rounded-lg hover:bg-red-50">Çıkış Yap</button>
+              <button onClick={() => signOut({ callbackUrl: "/" })} className="block w-full text-left px-3 py-2 text-sm text-[#FFF785] rounded-lg hover:bg-[#FFF785]/10">Çıkış Yap</button>
             </>
           ) : (
             <>
-              <Link href="/login" className="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Giriş Yap</Link>
-              <Link href="/register" className="block px-3 py-2 text-sm bg-amber-500 text-white rounded-lg text-center font-medium" onClick={() => setMenuOpen(false)}>Kayıt Ol</Link>
+              <Link href="/login" className="block px-3 py-2 text-sm text-gray-200 rounded-lg hover:bg-white/5" onClick={() => setMenuOpen(false)}>Giriş Yap</Link>
+              <Link href="/register" className="block px-3 py-2 text-sm bg-[#FFF785] text-[#0a0a0a] rounded-lg text-center font-medium" onClick={() => setMenuOpen(false)}>Kayıt Ol</Link>
             </>
           )}
         </div>

@@ -77,7 +77,11 @@ export async function sendOrderConfirmation(opts: {
   });
 }
 
-export async function sendWelcomeEmail(opts: { to: string; name: string }) {
+export async function sendWelcomeEmail(opts: { to: string; name: string; verifyToken?: string }) {
+  const verifyUrl = opts.verifyToken
+    ? `${process.env.NEXTAUTH_URL}/verify-email?token=${opts.verifyToken}`
+    : null;
+
   const html = baseTemplate(`
 <div class="card">
   <div class="header">
@@ -86,14 +90,15 @@ export async function sendWelcomeEmail(opts: { to: string; name: string }) {
   </div>
   <div class="body">
     <p style="color:#374151;margin-top:0">Merhaba <strong>${opts.name}</strong>!</p>
-    <p style="color:#6b7280;font-size:14px">KadeStore'a katıldığınız için teşekkürler. Dijital oyun dünyasında en iyi adrestesiniz.</p>
+    <p style="color:#6b7280;font-size:14px">KadeStore'a katıldığınız için teşekkürler. ${verifyUrl ? "Hesabınızı aktive etmek için aşağıdaki bağlantıya tıklayın:" : ""}</p>
+    ${verifyUrl ? `<div style="text-align:center;margin:24px 0"><a href="${verifyUrl}" class="btn">E-Posta Adresimi Doğrula →</a></div>` : ""}
     <ul style="color:#6b7280;font-size:14px;padding-left:20px">
       <li>500+ oyun çeşidi</li>
       <li>Anında anahtar teslimatı</li>
       <li>Rank sistemi ile ödüller</li>
       <li>Steam Guard 2FA yönetimi</li>
     </ul>
-    <a href="${process.env.NEXTAUTH_URL}/games" class="btn">Oyunları Keşfet →</a>
+    <p style="color:#9ca3af;font-size:12px;margin-top:24px">${verifyUrl ? "Bağlantı 24 saat geçerlidir. Bu kaydı siz yapmadıysanız bu e-postayı yok sayabilirsiniz." : ""}</p>
   </div>
   <div class="footer">© 2026 KadeStore · Dijital oyun dünyasının güvenilir adresi</div>
 </div>`);
@@ -101,7 +106,49 @@ export async function sendWelcomeEmail(opts: { to: string; name: string }) {
   await transporter.sendMail({
     from: FROM,
     to: opts.to,
-    subject: "KadeStore'a Hoş Geldiniz! 🎮",
+    subject: verifyUrl ? "E-Posta Doğrulama — KadeStore" : "KadeStore'a Hoş Geldiniz! 🎮",
+    html,
+  });
+}
+
+export async function sendPasswordResetLink(opts: { to: string; name: string; token: string }) {
+  const url = `${process.env.NEXTAUTH_URL}/reset-password?token=${opts.token}`;
+  const html = baseTemplate(`
+<div class="card">
+  <div class="header"><h1>● KadeStore</h1><span>Şifre Sıfırlama Talebi</span></div>
+  <div class="body">
+    <p style="color:#374151;margin-top:0">Merhaba <strong>${opts.name}</strong>,</p>
+    <p style="color:#6b7280;font-size:14px">Şifrenizi sıfırlamak için aşağıdaki bağlantıya tıklayın. Bağlantı <strong>30 dakika</strong> geçerlidir.</p>
+    <div style="text-align:center;margin:24px 0"><a href="${url}" class="btn">Şifremi Sıfırla →</a></div>
+    <p style="color:#9ca3af;font-size:12px;margin-top:24px">Bu talebi siz yapmadıysanız, bu e-postayı yok sayabilirsiniz. Şifreniz değişmez.</p>
+  </div>
+  <div class="footer">© 2026 KadeStore</div>
+</div>`);
+
+  await transporter.sendMail({
+    from: FROM,
+    to: opts.to,
+    subject: "Şifre Sıfırlama Talebi — KadeStore",
+    html,
+  });
+}
+
+export async function sendStockBackInStock(opts: { to: string; name: string; gameTitle: string; gameSlug: string }) {
+  const url = `${process.env.NEXTAUTH_URL}/games/${opts.gameSlug}`;
+  const html = baseTemplate(`
+<div class="card">
+  <div class="header"><h1>● KadeStore</h1><span>İstediğiniz Oyun Stokta!</span></div>
+  <div class="body">
+    <p style="color:#374151;margin-top:0">Merhaba <strong>${opts.name}</strong>,</p>
+    <p style="color:#6b7280;font-size:14px"><strong>${opts.gameTitle}</strong> oyunu stoğa girdi! Stoklar tükenmeden hemen alın.</p>
+    <div style="text-align:center;margin:24px 0"><a href="${url}" class="btn">Şimdi Satın Al →</a></div>
+  </div>
+  <div class="footer">© 2026 KadeStore</div>
+</div>`);
+  await transporter.sendMail({
+    from: FROM,
+    to: opts.to,
+    subject: `🎮 ${opts.gameTitle} Stokta — KadeStore`,
     html,
   });
 }

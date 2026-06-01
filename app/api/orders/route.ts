@@ -37,35 +37,49 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ orders });
 }
 
+// ⚠ Sadece admin manuel sipariş eklemek için.
+// Normal satış akışı için /api/payment/start kullanın (Shopier).
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session || (session.user as any).role !== "admin") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-  const { gameId } = await req.json();
+  const { gameId, targetUserId } = await req.json();
   if (!gameId) return NextResponse.json({ error: "gameId gerekli" }, { status: 400 });
 
-  const user = await prisma.user.findUnique({ where: { email: session.user.email } });
-  if (!user) return NextResponse.json({ error: "Kullanıcı bulunamadı" }, { status: 404 });
+  const targetUser = targetUserId
+    ? await prisma.user.findUnique({ where: { id: targetUserId } })
+    : await prisma.user.findUnique({ where: { email: session.user!.email! } });
+  if (!targetUser) return NextResponse.json({ error: "Kullanıcı bulunamadı" }, { status: 404 });
 
   const game = await prisma.game.findUnique({ where: { id: gameId } });
   if (!game) return NextResponse.json({ error: "Oyun bulunamadı" }, { status: 404 });
 
+  // Atomic key allocation: koşul içinde update + güncel state ile yeniden ata
   const availableKey = await prisma.gameKey.findFirst({ where: { gameId, isUsed: false } });
   if (!availableKey) return NextResponse.json({ error: "Bu oyun için stokta anahtar yok." }, { status: 400 });
 
-  const newPoints = user.points + 1;
+  const claimed = await prisma.gameKey.updateMany({
+    where: { id: availableKey.id, isUsed: false },
+    data: { isUsed: true },
+  });
+  if (claimed.count === 0) {
+    return NextResponse.json({ error: "Anahtar başka bir işlemde tahsis edildi, tekrar deneyin." }, { status: 409 });
+  }
+
+  const newPoints = targetUser.points + 1;
   const newRank = rankFromPoints(newPoints);
 
   const [order] = await prisma.$transaction([
     prisma.order.create({
-      data: { userId: user.id, gameId, price: game.price, status: "completed" },
+      data: { userId: targetUser.id, gameId, price: game.price, status: "completed" },
     }),
-    prisma.gameKey.update({ where: { id: availableKey.id }, data: { isUsed: true } }),
-    prisma.user.update({ where: { id: user.id }, data: { points: newPoints, rank: newRank } }),
+    prisma.user.update({ where: { id: targetUser.id }, data: { points: newPoints, rank: newRank } }),
   ]);
 
   await prisma.userKey.create({
-    data: { userId: user.id, gameKeyId: availableKey.id, orderId: order.id },
+    data: { userId: targetUser.id, gameKeyId: availableKey.id, orderId: order.id, source: "admin" },
   });
 
   return NextResponse.json({ success: true, key: availableKey.key, orderId: order.id });

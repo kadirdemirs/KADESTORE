@@ -22,7 +22,7 @@ function CopyBtn({ value, onCopy, copied }: { value: string; onCopy: () => void;
     <button
       onClick={onCopy}
       title="Kopyala"
-      className="p-1.5 text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10 rounded-lg transition flex-shrink-0"
+      className="p-1.5 text-gray-500 hover:text-[#FFF785] hover:bg-[#FFF785]/10 dark:hover:bg-[#FFF785]/10 rounded-lg transition flex-shrink-0"
     >
       {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
     </button>
@@ -89,9 +89,9 @@ export default function AccountCard({ item }: { item: LibraryItem }) {
   }, [guard !== null]);
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden flex flex-col">
+    <div className="bg-[#111111] dark:bg-gray-900 rounded-2xl border border-white/5 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col">
       {/* Görsel */}
-      <div className="h-32 bg-gradient-to-br from-amber-400 to-orange-500 relative">
+      <div className="h-32 bg-gradient-to-br from-[#FFE74F] to-[#FFE74F] relative">
         {g.imageUrl ? (
           <img src={g.imageUrl} alt={g.title} className="w-full h-full object-cover" />
         ) : (
@@ -108,14 +108,14 @@ export default function AccountCard({ item }: { item: LibraryItem }) {
       </div>
 
       <div className="p-4 flex-1 flex flex-col">
-        <p className="font-bold text-gray-900 dark:text-white text-sm leading-snug">{g.title}</p>
+        <p className="font-bold text-white dark:text-white text-sm leading-snug">{g.title}</p>
 
         {isAccount ? (
           <div className="mt-3 space-y-2">
             {/* Kullanıcı adı */}
-            <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 rounded-xl px-3 py-2">
-              <span className="text-[11px] font-semibold text-gray-400 uppercase w-12">Hesap</span>
-              <span className="flex-1 text-sm text-gray-800 dark:text-gray-100 font-mono truncate">
+            <div className="flex items-center gap-2 bg-[#0a0a0a] dark:bg-gray-800 rounded-xl px-3 py-2">
+              <span className="text-[11px] font-semibold text-gray-500 uppercase w-12">Hesap</span>
+              <span className="flex-1 text-sm text-gray-100 dark:text-gray-100 font-mono truncate">
                 {item.gameKey.steamUsername || "—"}
               </span>
               <CopyBtn
@@ -125,15 +125,15 @@ export default function AccountCard({ item }: { item: LibraryItem }) {
               />
             </div>
             {/* Şifre */}
-            <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 rounded-xl px-3 py-2">
-              <span className="text-[11px] font-semibold text-gray-400 uppercase w-12">Şifre</span>
-              <span className="flex-1 text-sm text-gray-800 dark:text-gray-100 font-mono truncate">
+            <div className="flex items-center gap-2 bg-[#0a0a0a] dark:bg-gray-800 rounded-xl px-3 py-2">
+              <span className="text-[11px] font-semibold text-gray-500 uppercase w-12">Şifre</span>
+              <span className="flex-1 text-sm text-gray-100 dark:text-gray-100 font-mono truncate">
                 {showPass ? item.gameKey.steamPassword || "—" : "••••••••"}
               </span>
               <button
                 onClick={() => setShowPass((s) => !s)}
                 title={showPass ? "Gizle" : "Göster"}
-                className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-lg transition flex-shrink-0"
+                className="p-1.5 text-gray-500 hover:text-gray-200 dark:hover:text-gray-200 rounded-lg transition flex-shrink-0"
               >
                 {showPass ? <EyeOff size={14} /> : <Eye size={14} />}
               </button>
@@ -145,7 +145,7 @@ export default function AccountCard({ item }: { item: LibraryItem }) {
             </div>
 
             {item.gameKey.accountNote && (
-              <p className="text-xs text-gray-400 px-1">{item.gameKey.accountNote}</p>
+              <p className="text-xs text-gray-500 px-1">{item.gameKey.accountNote}</p>
             )}
 
             {/* Guard kodu */}
@@ -181,16 +181,16 @@ export default function AccountCard({ item }: { item: LibraryItem }) {
                     </div>
                   </div>
                 )}
-                {guardError && <p className="text-red-600 text-xs mt-1.5">{guardError}</p>}
+                {guardError && <p className="text-[#FFF785] text-xs mt-1.5">{guardError}</p>}
               </div>
             )}
           </div>
         ) : (
           // Klasik anahtar teslimi
           <div className="mt-3">
-            <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 rounded-xl px-3 py-2">
-              <KeyRound size={14} className="text-gray-400 flex-shrink-0" />
-              <span className="flex-1 text-sm text-gray-800 dark:text-gray-100 font-mono truncate">
+            <div className="flex items-center gap-2 bg-[#0a0a0a] dark:bg-gray-800 rounded-xl px-3 py-2">
+              <KeyRound size={14} className="text-gray-500 flex-shrink-0" />
+              <span className="flex-1 text-sm text-gray-100 dark:text-gray-100 font-mono truncate">
                 {item.gameKey.key || "—"}
               </span>
               <CopyBtn
@@ -202,7 +202,7 @@ export default function AccountCard({ item }: { item: LibraryItem }) {
           </div>
         )}
 
-        <p className="text-[11px] text-gray-300 dark:text-gray-600 mt-3">
+        <p className="text-[11px] text-gray-600 dark:text-gray-600 mt-3">
           {new Date(item.claimedAt).toLocaleDateString("tr-TR")} ·{" "}
           {item.source === "purchase" ? "Satın alındı" : "Aktivasyon"}
         </p>

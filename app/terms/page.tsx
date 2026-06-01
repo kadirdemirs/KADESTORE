@@ -5,11 +5,11 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 bg-gray-50 py-16 px-4">
+      <main className="flex-1 bg-[#0a0a0a] py-16 px-4">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Kullanım Şartları</h1>
-          <p className="text-gray-400 text-sm mb-8">Son güncelleme: Ocak 2026</p>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 space-y-6 text-sm text-gray-600 leading-relaxed">
+          <h1 className="text-3xl font-bold text-white mb-2">Kullanım Şartları</h1>
+          <p className="text-gray-500 text-sm mb-8">Son güncelleme: Ocak 2026</p>
+          <div className="bg-[#111111] rounded-2xl border border-white/5 shadow-2xl p-8 space-y-6 text-sm text-gray-600 leading-relaxed">
             {[
               { title: "1. Genel Koşullar", body: "KadeStore platformunu kullanarak bu kullanım şartlarını kabul etmiş sayılırsınız. 18 yaşın altındaysanız ebeveyn gözetiminde kullanmanız gerekmektedir." },
               { title: "2. Hesap Güvenliği", body: "Hesabınızın güvenliğinden siz sorumlusunuz. Şifrenizi kimseyle paylaşmayın ve başkalarının erişimine izin vermeyin. Şüpheli bir durumda derhal destek ekibimize bildirin." },
@@ -20,7 +20,7 @@ export default function TermsPage() {
               { title: "7. Değişiklikler", body: "Bu kullanım şartları önceden bildirim yapılmaksızın güncellenebilir. Güncel şartlar her zaman bu sayfada yayınlanır." },
             ].map((section) => (
               <div key={section.title}>
-                <h2 className="font-bold text-gray-900 mb-2">{section.title}</h2>
+                <h2 className="font-bold text-white mb-2">{section.title}</h2>
                 <p>{section.body}</p>
               </div>
             ))}

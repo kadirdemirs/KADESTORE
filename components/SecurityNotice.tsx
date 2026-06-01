@@ -22,7 +22,7 @@ export default function SecurityNotice() {
   return (
     <div className="fixed bottom-0 inset-x-0 z-[60] bg-gray-900 text-gray-200 border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-start gap-3">
-        <ShieldCheck size={18} className="text-amber-400 flex-shrink-0 mt-0.5" />
+        <ShieldCheck size={18} className="text-[#FFF785] flex-shrink-0 mt-0.5" />
         <p className="text-xs leading-relaxed flex-1">
           <strong className="text-white">Güvenlik Bildirimi:</strong> Bu site, hesap güvenliğinizi sağlamak ve
           yetkisiz erişimleri önlemek amacıyla tarayıcı parmak izi ve cihaz tanımlayıcılar gibi teknik veriler

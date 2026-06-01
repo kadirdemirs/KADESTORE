@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+build
+public
+.vercel
+*.lock
+prisma/migrations
+dev.db

@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { rateLimit } from "@/lib/rate-limit";
 import { sendWelcomeEmail } from "@/lib/email";
+import { BCRYPT_ROUNDS } from "@/lib/auth";
+import crypto from "crypto";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -26,11 +28,27 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { name, email, password } = body;
   if (!name || !email || !password) return NextResponse.json({ error: "Eksik alan" }, { status: 400 });
-  if (password.length < 6) return NextResponse.json({ error: "Şifre en az 6 karakter olmalı." }, { status: 400 });
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) return NextResponse.json({ error: "Bu e-posta zaten kayıtlı." }, { status: 409 });
-  const hashed = await bcrypt.hash(password, 10);
-  const user = await prisma.user.create({ data: { name, email, password: hashed } });
-  sendWelcomeEmail({ to: user.email, name: user.name }).catch(() => {});
+  if (password.length < 8) return NextResponse.json({ error: "Şifre en az 8 karakter olmalı." }, { status: 400 });
+  if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
+    return NextResponse.json({ error: "Şifre büyük harf, küçük harf ve rakam içermelidir." }, { status: 400 });
+  }
+  const normalizedEmail = email.toLowerCase().trim();
+  const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+  // E-posta enumeration koruması: var olan kullanıcıyı da var-yok belirtmeden başarılı dön
+  if (existing) {
+    return NextResponse.json({ user: { email: normalizedEmail }, message: "Kayıt isteği alındı." }, { status: 201 });
+  }
+  const hashed = await bcrypt.hash(password, BCRYPT_ROUNDS);
+  const verifyToken = crypto.randomBytes(32).toString("hex");
+  const user = await prisma.user.create({
+    data: {
+      name,
+      email: normalizedEmail,
+      password: hashed,
+      emailVerified: false,
+      emailVerifyToken: verifyToken,
+    } as any,
+  });
+  sendWelcomeEmail({ to: user.email, name: user.name, verifyToken }).catch(() => {});
   return NextResponse.json({ user: { id: user.id, name: user.name, email: user.email } }, { status: 201 });
 }
