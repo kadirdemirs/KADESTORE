@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { LayoutDashboard, Gamepad2, Key, Users, ShoppingBag, Home, Package, BarChart3, Tag, UserCog } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
   if (!session || (session.user as any).role !== "admin") redirect("/");
